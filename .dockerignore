@@ -1,0 +1,10 @@
+.env
+.venv
+.git
+__pycache__
+.pytest_cache
+*.wav
+*.webm
+*.mp3
+node_modules
+

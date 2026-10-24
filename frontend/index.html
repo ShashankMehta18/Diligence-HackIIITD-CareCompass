@@ -24,6 +24,7 @@
         </span>
         <span class="brand-copy">SehatSaathi<span>by Diligence</span></span>
       </a>
+      <nav class="main-nav" aria-label="Main navigation"><a href="#how-it-works">How it works</a><a href="#examples">Health topics</a></nav>
       <div class="header-actions">
         <span class="header-context hidden" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -43,8 +44,8 @@
   <main class="page-shell">
     <section class="intro" aria-label="SehatSaathi introduction">
       <div class="intro-copy">
-        <span class="eyebrow hidden" id="eyebrow"><span class="eyebrow-mark" aria-hidden="true"></span>A CLEARER NEXT STEP</span>
-        <h1 id="heading">Find the right care,<br>one question at a time</h1>
+        <span class="eyebrow" id="eyebrow">CARE GUIDANCE, MADE SIMPLE</span>
+        <h1 id="heading">Find the right care,<br><em>one question at a time.</em></h1>
         <p id="subtitle">Tell us what’s needed. We’ll help choose a care pathway and explain the next step.</p>
         <div class="intro-trust hidden" aria-hidden="true">
           <span><span class="trust-symbol">✓</span> Simple questions</span>
@@ -52,7 +53,10 @@
           <span><span class="trust-symbol">✓</span> Safety-first guidance</span>
         </div>
       </div>
-      <div class="intro-graphic" aria-hidden="true">
+      <div class="intro-graphic" id="how-it-works" aria-label="How SehatSaathi works">
+        <div class="value-point"><span class="value-icon" aria-hidden="true">♡</span><strong>Understand symptoms</strong><span>In simple language, without medical jargon</span></div>
+        <div class="value-point"><span class="value-icon" aria-hidden="true">⌖</span><strong>Know your next step</strong><span>Guidance based on what you share</span></div>
+        <div class="value-point"><span class="value-icon" aria-hidden="true">♧</span><strong>Find local care</strong><span>Explore available care options</span></div>
         <div class="graphic-glow"></div>
         <div class="graphic-grid"></div>
         <div class="graphic-ring graphic-ring-outer"></div>
@@ -84,7 +88,7 @@
         <div class="panel-title">
           <div>
             
-            <h2 id="conversationTitle">Describe the need</h2>
+            <h2 id="conversationTitle">Tell us what’s going on</h2>
           </div>
           <button id="reset" class="text-button" type="button">Start again</button>
         </div>
@@ -92,7 +96,7 @@
         <div id="concern" class="concern hidden" role="alert"></div>
         <div id="answers" class="answers"></div>
         <form id="intake">
-          <label for="message" id="messageLabel">Your message</label>
+          <label for="message" id="messageLabel">Describe your symptoms</label>
           <textarea id="message" rows="3" maxlength="6000" placeholder="e.g. papa ko do din se bukhar hai aur khansi bhi" required></textarea>
           <div id="transcriptTools" class="hidden"><span>Editable transcript — correct names, numbers and “no” before sending</span><button id="discard" type="button" class="text-button">Discard recording</button></div>
           <div class="input-actions">
@@ -111,7 +115,7 @@
         </details>
       </section>
       <aside class="panel result-panel" aria-label="Your next step">
-        <div class="result-eyebrow"><span class="step">YOUR NEXT STEP</span><span class="result-decorative-dot" aria-hidden="true"></span></div>
+        <div class="result-eyebrow"><h2>Your next step</h2><span class="result-decorative-dot" aria-hidden="true"></span></div>
         <div id="result">
           <div class="empty-icon">↗</div>
           <h2 id="waitingTitle">Care begins with understanding</h2>
@@ -120,7 +124,7 @@
         <div id="booking" class="hidden" role="status"></div>
       </aside>
     </div>
-    <section class="examples">
+    <section class="examples" id="examples">
       <div class="examples-heading"><span class="step">QUICK EXAMPLES</span></div>
       <div>
         <button data-example="I have stomach ache">Stomach pain</button>
@@ -129,6 +133,11 @@
         <button data-example="I have had a fever for ten days, around 103°F">Prolonged fever</button>
         <button data-example="पापा को तेज सीने में दर्द है और सांस नहीं आ रही">Emergency bypass</button>
       </div>
+    </section>
+    <section class="safety-note" aria-label="Emergency guidance">
+      <div class="safety-symbol" aria-hidden="true">!</div>
+      <div><strong>If you have severe symptoms, seek emergency help immediately.</strong><p>This tool offers guidance and cannot replace professional medical care.</p></div>
+      <a href="tel:112" class="safety-call">☎ &nbsp; Call 112</a>
     </section>
     <footer><span>© SehatSaathi · Diligence</span><span>No medical diagnosis, prescription, real booking or dispatch. If someone is in immediate danger, call <a href="tel:112">112</a>.</span></footer>
   </main>

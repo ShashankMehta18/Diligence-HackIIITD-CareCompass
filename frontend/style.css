@@ -276,3 +276,92 @@ footer a:hover {text-decoration: underline}
 .panel-title{margin-bottom:18px}
 .result-eyebrow{margin-bottom:12px}
 @media(max-width:760px){.intro-graphic{height:145px}.workspace{margin-top:19px}}
+
+/* Nordic Mint V2 — presentation-only redesign. Keep all application hooks intact. */
+:root {
+  --ink:#142923; --muted:#60746e; --muted-strong:#395e51;
+  --green:#205c46; --blue:#205c46; --blue-deep:#174b39;
+  --blue-pale:#e6f3eb; --cream:#f5faf7; --line:#dcebe3;
+  --green-safe:#205c46; --shadow:0 12px 32px rgba(27,74,55,.045),0 1px 3px rgba(27,74,55,.025);
+  --ring:0 0 0 4px rgba(32,92,70,.12);
+}
+body {background:#f5faf7;color:var(--ink);font-size:15px}
+body::before {display:none}
+.site-header {max-width:1392px;margin:13px auto 0;border:1px solid #e1ebe5;border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 4px 20px rgba(24,69,50,.025)}
+.header-inner {max-width:1344px;min-height:66px;padding:12px 28px;justify-content:flex-start}
+.brand {gap:8px}
+.brand-symbol {width:36px;height:36px;border:0;border-radius:0;background:transparent;color:#205c46;box-shadow:none}
+.brand-symbol svg {width:34px;height:34px}
+.brand-copy {color:#1a4638;font-size:25px;letter-spacing:-1.1px;font-weight:800}
+.brand-copy>span {margin-top:1px;font-size:8px;letter-spacing:1px;color:#7a9a89}
+.main-nav {display:flex;align-items:center;gap:34px;margin-left:46px}
+.main-nav a {font-size:13px;color:#2b403b;text-decoration:none;font-weight:550}
+.main-nav a:hover {color:#205c46;text-decoration:underline;text-underline-offset:5px}
+.header-actions {margin-left:auto}
+.language {gap:0}
+.language label {display:none}
+.language select {border:1px solid #d4e7dc;border-radius:28px;background:#f8fcf9;color:#274e3f;min-height:41px;padding:8px 30px 8px 16px}
+.page-shell {max-width:1392px;padding:24px 28px 0}
+.intro {grid-template-columns:minmax(0,1.2fr) minmax(0,.9fr);gap:35px;padding:0 16px 16px;min-height:0;align-items:center}
+.intro-copy {padding:4px 0 0}
+.intro .eyebrow {display:block!important;padding:0;border:0;background:none;color:#486657;font-size:10px;font-weight:750;letter-spacing:3.3px}
+.intro .eyebrow-mark {display:none}
+.intro h1 {max-width:810px;margin:18px 0 15px;color:#111c20;font-family:Georgia,"Times New Roman",serif;font-size:clamp(39px,4.4vw,65px);font-weight:700;letter-spacing:-2.6px;line-height:1.08}
+.intro h1 em {color:#205c46;font-style:normal}
+.intro p {max-width:640px;color:#5c6b72;font-size:16px;line-height:1.65}
+.intro-graphic {height:auto!important;min-height:198px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:0;border:0;border-radius:0;background:transparent!important;overflow:visible}
+.intro-graphic>.graphic-glow,.intro-graphic>.graphic-grid,.intro-graphic>.graphic-ring,.intro-graphic>.graphic-center {display:none}
+.value-point {min-height:160px;padding:8px 15px;display:flex;align-items:center;flex-direction:column;justify-content:center;text-align:center;gap:10px}
+.value-point+.value-point {border-left:1px solid #dce9e1}
+.value-icon {display:grid;place-items:center;width:61px;height:61px;border-radius:50%;background:#e5f3eb;color:#205c46;font-family:Georgia,serif;font-size:31px;line-height:1}
+.value-point strong {font-size:14px;line-height:1.35;font-weight:700;color:#182e26}
+.value-point>span:last-child {font-size:12px;color:#718079;line-height:1.5}
+.workspace {margin-top:5px;grid-template-columns:minmax(0,1.44fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.panel {padding:28px 30px;border:1px solid #dceae2;border-radius:17px;box-shadow:var(--shadow)}
+.panel::before {display:none}
+.panel-title {padding-bottom:11px;border-bottom:0;margin-bottom:10px}
+.panel-title h2,.result-eyebrow h2 {font-family:Georgia,"Times New Roman",serif;font-size:32px;font-weight:700;letter-spacing:-1.1px;line-height:1.18;color:#12231c;margin:0}
+.text-button {color:#356f54}
+.chat-panel label {color:#53665c;font-weight:600}
+#chat {margin:6px 0 10px;max-height:310px}
+#chat:empty {min-height:0;display:block;margin:0 0 16px}
+#chat:empty::before {content:"Start by sharing what is happening. You can type or use your voice.";padding:13px 16px;border:0;border-radius:12px;background:#edf7f0;color:#5b806c;font-size:12px}
+.bubble {border-color:#dfebe4;box-shadow:none}
+.bubble.user {background:#e7f4eb;border-color:#d9eadf}
+.bubble.assistant {background:#f8faf8}
+textarea {min-height:104px;border:1px solid #d5e5dc;border-radius:13px;background:#fff;color:#18362a;padding:16px 18px}
+textarea::placeholder {color:#899d92}
+textarea:focus {border-color:#719a82;box-shadow:var(--ring)}
+.input-actions {margin-top:13px;gap:12px}
+.primary,.secondary {border-radius:11px;min-height:48px;font-size:14px}
+.primary {background:#205c46;border-color:#205c46;color:#fff;box-shadow:0 4px 12px rgba(32,92,70,.11);min-width:180px}
+.primary:hover:not(:disabled) {background:#174a38;border-color:#174a38;box-shadow:0 7px 18px rgba(32,92,70,.15)}
+.secondary {color:#205c46;background:#ecf6ef;border-color:#d6e9dc}
+.secondary:hover:not(:disabled) {color:#174a38;background:#e0f0e6;border-color:#bddac7}
+.answers button,.examples button {background:#ecf6ef;border:1px solid #e1eee5;color:#285e47;border-radius:11px;font-size:12px;font-weight:550}
+.answers button:hover:not(:disabled),.examples button:hover:not(:disabled) {color:#174b39;background:#dfefe5;border-color:#c0dfcc}
+.chat-panel details {margin-top:17px}
+.result-panel {min-height:435px;background:#f8fcf9}
+.result-eyebrow {border:0;padding-bottom:13px;margin-bottom:0}
+.result-decorative-dot {border-color:#7caa8c;box-shadow:0 0 0 4px #ebf6ee}
+#result:has(.empty-icon) {padding:8px 12px 30px;text-align:center}
+.empty-icon {margin:36px auto 18px;width:72px;height:72px;background:#e5f3e9;color:#205c46;border-color:#d7eadd;box-shadow:none;font-size:32px}
+.empty-icon::after {display:none}
+#result:has(.empty-icon) h2 {font-size:24px;font-family:Georgia,serif}
+#result:has(.empty-icon) p {color:#72837a}
+.card {background:#fff;border-color:#dceae1}
+.card h3 {color:#24503e}
+.card .badge {color:#205c46;background:#eaf5ee}
+.examples {margin:17px 0 20px;padding:19px 22px;border-radius:15px;box-shadow:none}
+.examples .step {color:#70877b;font-size:10px;letter-spacing:1.8px}
+.examples>div:last-child {margin-top:11px}
+.safety-note {display:flex;align-items:center;gap:18px;margin:19px 0 16px;padding:16px 21px;border:1px solid #dce9e0;border-radius:15px;background:#f0f8f3}
+.safety-symbol {flex-shrink:0;display:grid;place-items:center;width:37px;height:37px;border:2px solid #205c46;border-radius:11px;color:#205c46;font-size:23px;font-weight:800}
+.safety-note strong {font-size:13px;color:#214e3b}
+.safety-note p {margin:1px 0 0;font-size:12px;color:#698076}
+.safety-call {margin-left:auto;white-space:nowrap;padding:10px 19px;border:1px solid #7baa8c;border-radius:30px;background:white;color:#205c46;font-size:13px;font-weight:750;text-decoration:none}
+.safety-call:hover {background:#e2f1e7;color:#164834}
+footer {padding-top:16px;color:#748b7e}
+@media(max-width:1080px){.main-nav{margin-left:18px;gap:17px}.intro{grid-template-columns:1fr;gap:8px}.intro-graphic{min-height:130px!important}.value-point{min-height:125px}.workspace{grid-template-columns:1.15fr 1fr}.panel{padding:23px}}
+@media(max-width:760px){.site-header{margin:7px 9px 0;border-radius:12px}.header-inner{min-height:64px;padding:9px 13px}.main-nav{display:none}.brand-symbol{width:30px;height:30px}.brand-symbol svg{width:29px;height:29px}.brand-copy{font-size:20px}.page-shell{padding:22px 15px 0}.intro{padding:0 2px 16px}.intro h1{font-size:clamp(35px,8vw,49px);letter-spacing:-1.65px;margin:13px 0}.intro p{font-size:14px}.intro-graphic{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:0!important;gap:0;margin-top:17px}.value-point{min-height:110px;padding:6px;gap:5px}.value-icon{width:42px;height:42px;font-size:23px}.value-point strong{font-size:11px}.value-point>span:last-child{font-size:10px}.workspace{grid-template-columns:1fr;gap:14px;margin-top:2px}.panel{padding:21px}.panel-title h2,.result-eyebrow h2{font-size:27px}.result-panel{min-height:290px}.safety-note{gap:10px;flex-wrap:wrap;padding:14px}.safety-call{margin:5px 0 0 47px}.examples{margin-top:14px}}
+@media(max-width:400px){.brand-copy{font-size:18px}.language select{max-width:119px;padding-left:8px;font-size:11px}.page-shell{padding-left:11px;padding-right:11px}.value-point>span:last-child{display:none}.value-point{min-height:78px}.panel{padding:17px}.primary{min-width:0}.safety-call{margin-left:0}}

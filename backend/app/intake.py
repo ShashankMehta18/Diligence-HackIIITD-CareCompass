@@ -2,7 +2,9 @@
 import re
 import unicodedata
 from dataclasses import dataclass,field
+from types import SimpleNamespace
 from .schemas import Extraction, FlagEvidence,SymptomEvidence
+from .complaints import BROAD_QUESTIONS,enrich,question_candidates,broad_concern,emergency_evidence,has
 
 QUESTIONS = {
  'need': ('What help is needed: symptoms, home nursing, a lab test, or a doctor consultation?', 'किस मदद की ज़रूरत है: लक्षणों की जाँच, घर पर नर्सिंग, लैब टेस्ट या डॉक्टर से सलाह?'),
@@ -12,6 +14,7 @@ QUESTIONS = {
  'temperature': ('What is the measured temperature, including °C or °F?', 'तापमान कितना है? कृपया °C या °F भी बताएँ।'),
  'injection': ('What injection route is written on the prescription: IM, IV, or something else?', 'पर्चे पर इंजेक्शन का कौन सा तरीका लिखा है: IM, IV या कुछ और?'),
 }
+QUESTIONS.update({k:(q.en,q.hi) for k,q in BROAD_QUESTIONS.items()})
 
 PATTERNS = {
  'chest_pain': r'chest\s+(?:pain|tightness)|(?:pain|tightness)\s+(?:in\s+)?(?:my\s+|the\s+)?chest|seene\s*(?:me|mein)?\s*(?:dard|pain)|सीने\s*(?:में)?\s*(?:तेज\s*)?दर्द',
@@ -74,12 +77,12 @@ def extract_local(text,question=None):
         x.patient=aliases.get(identity,identity)
     # Age is not duration: require an age unit plus old/age/context, or an age answer.
     age=re.search(r'(\d+(?:\.\d+)?)\s*[- ]?\s*(years?|months?|days?|saal|mahine|साल|महीने)\s*[- ]?\s*(?:old|का|की|के)',t)
-    if question=='age' and not age: age=re.search(r'(\d+(?:\.\d+)?)\s*(years?|months?|days?|saal|mahine|साल|महीने)?',t)
+    if question in ('age','symptom_age') and not age: age=re.search(r'(\d+(?:\.\d+)?)\s*(years?|months?|days?|saal|mahine|साल|महीने)?',t)
     if age:
         unit=age[2] or 'years';x.age_months=float(age[1])*(1/30.4375 if unit.startswith('day') else 1 if unit in ('month','months','mahine','महीने') else 12)
     x.duration_days=number_days(t)
-    if question=='age': x.duration_days=None
-    if question=='duration' and x.duration_days is None and re.fullmatch(r'\d+(?:\.\d+)?',t.strip()):x.duration_days=float(t)
+    if question in ('age','symptom_age'): x.duration_days=None
+    if question in ('duration','symptom_duration') and x.duration_days is None and re.fullmatch(r'\d+(?:\.\d+)?',t.strip()):x.duration_days=float(t)
     temperature=list(re.finditer(r'(\d{2,3}(?:\.\d+)?)\s*(?:°\s*([cf])|degrees?\s*([cf])?|\b([cf])\b)',t))
     if temperature:
         m=temperature[-1];x.temperature=float(m[1]);x.temperature_unit=next((v.upper() for v in m.groups()[1:] if v),None)
@@ -99,7 +102,7 @@ def extract_local(text,question=None):
             denied=bool(re.search(r'no\s*$|नहीं\s*$',prefix))
             x.associated_symptoms.append(SymptomEvidence(name=name,status='denied' if denied else 'affirmed',quote=text))
     for risk,pattern in {'pregnancy':r'pregnant|गर्भवती','diabetes':r'diabetes|diabetic|मधुमेह','immunosuppression':r'immunosuppress|chemotherapy'}.items():
-        if re.search(pattern,t) and not re.search(r'no\s+'+pattern,t):x.risk_factors.append(risk)
+        if re.search(pattern,t) and not re.search(r'(?:no|not)\s+(?:'+pattern+r')',t):x.risk_factors.append(risk)
     x.fever=True if re.search(r'fever|bukhar|बुखार',t) else None
     if re.search(r'no\s+fever|bukhar\s+nahi|बुखार\s+नहीं',t):x.fever=False
     if x.temperature is not None and x.temperature_unit and x.temperature_timing!='historical':
@@ -110,13 +113,13 @@ def extract_local(text,question=None):
     elif re.search(r'\biv\b|intravenous',t): x.service='injection_iv'
     elif re.search(r'injection|इंजेक्शन',t): x.service='injection_unknown'
     elif re.search(r'\bbp\b.*sugar|sugar.*\bbp\b|बीपी.*शुगर',t): x.service='bp_sugar'
-    elif re.search(r'\b(?:cbc|thyroid|blood|lab|sample|collection|test)\b|सीबीसी|थायराइड|टेस्ट|सैंपल|जांच.*खून',t): x.service='lab'
+    elif re.search(r'\b(?:cbc|thyroid|lab|sample|collection|test)\b|सीबीसी|थायराइड|टेस्ट|सैंपल|जांच.*खून',t): x.service='lab'
     elif re.search(r'consult|reports?|second opinion|doctor se|डॉक्टर.*(?:सलाह|बात)|रिपोर्ट|ओपिनियन|परामर्श',t): x.service='doctor'
     elif re.search(r'home\s+check|ghar\s+pe\s+check|घर\s*(?:पर|पे)?\s*(?:जांच|जाँच)|weak|कमजोर|fever.*cough|bukhar.*khansi|बुखार.*खांसी|ghar pe dikhana',t): x.service='home_assessment'
     if question=='breathing':
         if re.fullmatch(r'(?:yes|haan|han|हाँ|हां|ji)[.! ]*',t):x.flags=[FlagEvidence(flag='breathlessness',status='affirmed',quote=text)]
         elif re.fullmatch(r'(?:no|nahi|nahin|नहीं|नही)[.! ]*',t):x.flags=[FlagEvidence(flag='breathlessness',status='denied',quote=text)]
-    return x
+    return enrich(x,text,question)
 
 @dataclass
 class State:
@@ -128,15 +131,27 @@ class State:
     question: str | None=None
     possible_recent_emergency: bool=False
     contradictions: list=field(default_factory=list)
+    established_emergencies: list=field(default_factory=list)
+    additional_concerns: list=field(default_factory=list)
     def merge(self,x,text,index):
         new_patient=x.patient
         # Explicit new patient starts an independent assessment.
         if self.facts.patient and new_patient and self.facts.patient!=new_patient:
-            self.facts=Extraction();self.flags={};self.evidence=[];self.asked=[];self.possible_recent_emergency=False
-        correction=bool(re.search(r'correction|misheard|transcri|meant|गलत|not .*but|नहीं.*बल्कि',normalise(text)))
-        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service']:
+            self.facts=Extraction();self.flags={};self.evidence=[];self.asked=[];self.possible_recent_emergency=False;self.contradictions=[];self.established_emergencies=[];self.additional_concerns=[]
+        correction=bool(re.search(r'correction|misheard|transcri|meant|actually|गलत|not .*but|नहीं.*बल्कि',normalise(text)))
+        # A newly reported focal symptom must be safety-screened even when it is
+        # associated with a different main complaint. Never transfer its pain
+        # severity/duration to the original complaint just to fit one slot.
+        independent=SimpleNamespace(facts=x)
+        independent_danger=emergency_evidence(independent)
+        independent_concern=broad_concern(independent)
+        different=bool(self.facts.complaint and x.complaint and self.facts.complaint!=x.complaint and self.facts.complaint!='other' and not correction)
+        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','pain_location','sudden_onset']:
             value=getattr(x,key)
             previous=getattr(self.facts,key)
+            if key=='complaint' and previous and previous!='other' and value and value!=previous and not correction:
+                continue  # An associated symptom does not silently replace the main complaint.
+            if different and key in ('duration_days','severity','pain_location','sudden_onset','onset'):continue
             if key in ('age_months','duration_days','temperature') and value is not None and previous is not None and value!=previous and not correction:
                 self.contradictions.append({'field':key,'previous':previous,'latest':value,'turn':index,'status':'latest_user_value_retained_review_needed'})
             if value is not None: setattr(self.facts,key,value)
@@ -144,6 +159,13 @@ class State:
         symptoms.update({v.name:v for v in x.associated_symptoms})
         self.facts.associated_symptoms=list(symptoms.values())
         self.facts.risk_factors=sorted(set(self.facts.risk_factors+x.risk_factors))
+        clinical={v.name:v for v in self.facts.clinical_features}
+        for v in x.clinical_features:
+            if v.name not in clinical or v.status=='affirmed' or correction or self.question in BROAD_QUESTIONS:
+                clinical[v.name]=v
+        self.facts.clinical_features=list(clinical.values())
+        if has(self,'fever_with_complaint'):self.facts.fever=True
+        elif has(self,'fever_with_complaint','denied') and x.fever is None:self.facts.fever=False
         if x.temperature is not None and x.temperature_unit is None:self.facts.temperature_unit=None
         for f in x.flags:
             if f.status=='affirmed' or f.flag not in self.flags or correction or self.question=='breathing':
@@ -151,6 +173,10 @@ class State:
         if any(f.status=='historical' for f in x.flags) and re.search(r'yesterday|earlier today|just now|कल|अभी',normalise(text)):
             self.possible_recent_emergency=True
         self.evidence.append({'turn':index,'text':text,'facts':x.model_dump(exclude_none=True)})
+        reasons=sorted(set(emergency_evidence(self)+independent_danger))
+        self.established_emergencies=reasons if correction else sorted(set(self.established_emergencies+reasons))
+        if correction:self.additional_concerns=[]
+        if different and independent_concern:self.additional_concerns.append(independent_concern)
 
 def infer_question(turn):
     if turn.question_id in QUESTIONS:return turn.question_id
@@ -184,10 +210,14 @@ def active_flags(state):
     # not an assertion that all infant fevers require an ambulance.
     if f.age_months is not None and f.age_months<3 and f.fever:
         flags.add('high_fever_infant')
+    if has(state,'new_one_sided_weakness'):flags.add('stroke_symptoms')
     return sorted(flags)
 
 def concern(state):
     f=state.facts
+    expanded=broad_concern(state)
+    if expanded:return expanded
+    if state.additional_concerns:return state.additional_concerns[-1]
     high=f.temperature is not None and f.temperature_timing!='historical' and ((f.temperature_unit=='F' and f.temperature>=103) or (f.temperature_unit=='C' and f.temperature>=39.4))
     if f.fever and ((f.duration_days or 0)>=5 or high):
         return 'The prolonged or high fever needs prompt medical assessment. Do not wait for this chat to finish to arrange care.'
@@ -199,7 +229,11 @@ def next_question(state):
     if len(state.asked)>=4:return None
     # Explicit procedures bypass unrelated symptom interviews.
     if f.service=='injection_unknown' and 'injection' not in state.asked:return 'injection'
-    if f.service and f.service!='home_assessment':return None
+    if f.service in ('dressing','injection_im','injection_iv','insulin','bp_sugar','lab'):return None
+    if f.complaint and f.complaint!='fever':
+        candidates=question_candidates(state)
+        return candidates[0] if candidates else None
+    if f.service=='doctor' and not f.fever:return None
     if f.fever:
         if concern(state) and 'breathlessness' not in state.flags and 'breathing' not in state.asked:return 'breathing'
         if f.age_months is None and 'age' not in state.asked:return 'age'

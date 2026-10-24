@@ -1,6 +1,6 @@
 # Architecture and safety policy
 
-Version carecompass-demo-0.1, 24 October 2026. Synthetic hackathon prototype; not clinician-reviewed or clinically validated.
+Version carecompass-demo-0.2, 24 October 2026. Synthetic hackathon prototype; not clinician-reviewed or clinically validated.
 
 ## Shared flow
 
@@ -10,7 +10,7 @@ Patient messages are untrusted data. They cannot change system policy, supported
 
 ## States and question policy
 
-Facts track patient identity, age in months, fever duration in days, temperature/unit, fever and service intent. Warning signs track affirmed, denied, historical or hypothetical; omission stays unknown. Evidence records preserve user turn references. The approved question bank covers need, age, breathing, duration, measured temperature/unit and injection route. It is deterministic and complaint-specific; Account A assists understanding, rather than generating unreviewed clinical questions. One question per turn; no repeating answered question IDs; normally at most four follow-ups, then human assessment fallback. Source messages are replayed, so correcting an earlier transcript before submission changes all downstream facts.
+Facts track patient identity, age in months, fever duration in days, temperature/unit, fever and service intent. Warning signs track affirmed, denied, historical or hypothetical; omission stays unknown. Evidence records preserve user turn references. The approved question bank now covers 17 named complaint families plus other, in addition to service intake; see BROAD_INTAKE.md for the current extraction fields, question plans and expanded safety-source mappings. It is deterministic and complaint-specific; Account A assists understanding, rather than generating unreviewed clinical questions. One question per turn; no repeating answered question IDs; normally at most four follow-ups, then human assessment fallback. Source messages are replayed, so correcting an earlier transcript before submission changes all downstream facts.
 
 Local handling covers finite spelling/phrase variants, not universal Hindi/Hinglish. Numeric age/duration and some word forms are supported; the live extractor adds language breadth but has not been benchmarked. Distinct relatives are isolated. Recent resolved warning signs retain assessment concern; older resolved/hypothetical examples do not automatically set active flags. Ambiguous context can be misinterpreted and requires mentor review.
 
@@ -27,7 +27,7 @@ Local handling covers finite spelling/phrase variants, not universal Hindi/Hingl
 | Explicit procedure | Confirm supported route/skill; no diagnosis/prescription | Roster and organiser care taxonomy |
 | Unknown or unsupported need | Focused question; after cap human-assessment consultation fallback | Implementation assumption, not official clinical policy |
 
-Call 112 is the Indian emergency action. No dispatch, ambulance arrival estimate, clinical diagnosis, drug advice or actual booking is claimed. Foreign source telephone numbers are not copied into the Indian interface. Unmapped emergencies and urgent in-person doctor assessment are contract gaps: retain the factual concern; do not invent controlled flag labels. Local code does not comprehensively recognise anaphylaxis or other out-of-vocabulary emergencies; source/mentor expansion remains necessary before any real use.
+Call 112 is the Indian emergency action. No dispatch, ambulance arrival estimate, clinical diagnosis, drug advice or actual booking is claimed. Foreign source telephone numbers are not copied into the Indian interface. Unmapped emergencies and urgent in-person doctor assessment are contract gaps: retain the factual concern; do not invent controlled flag labels. Version 0.2 adds selected airway, abdominal, headache, vision, confusion and back-pain warning-sign pathways without inventing controlled labels. Coverage remains finite and clinician review is still necessary before any real use.
 
 Sources checked 24 Oct 2026:
 

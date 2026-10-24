@@ -66,7 +66,7 @@ def test_unknown_is_not_denied():
 
 def test_associated_symptoms_and_historical_temperature():
     s=replay(req('Now headache and joint pain',[{'role':'user','text':'I have fever for ten days'}]))
-    assert {v.name for v in s.facts.associated_symptoms}=={'headache','joint_pain'}
+    assert {'headache','joint_pain'}<={v.name for v in s.facts.associated_symptoms}
     assert s.facts.duration_days==10
     s=replay(req('My temperature was 103°F yesterday'))
     assert s.facts.temperature_timing=='historical'

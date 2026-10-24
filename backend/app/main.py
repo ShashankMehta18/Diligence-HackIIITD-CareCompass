@@ -11,7 +11,8 @@ from fastapi.responses import FileResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
 from .config import ROOT,MODE,MAX_AUDIO_BYTES,REFERENCE_TIME
 from .core import assess
-from .intake import detect_flags
+from .intake import detect_flags,extract_local,State,active_flags,replay
+from .complaints import emergency_evidence
 from .providers import GroqAccounts,ProviderError
 from .schemas import Request,Response
 
@@ -21,7 +22,7 @@ async def lifespan(app):
     yield
     await app.state.providers.close()
 
-app=FastAPI(title='CareCompass · Diligence',version='0.1.0',lifespan=lifespan,docs_url=None,redoc_url=None)
+app=FastAPI(title='CareCompass · Diligence',version='0.2.0',lifespan=lifespan,docs_url=None,redoc_url=None)
 
 class SizeLimit:
     """Bound request bytes before JSON/multipart parsing, including chunked bodies."""
@@ -66,7 +67,7 @@ async def provider_error(request,error):
 @app.get('/health')
 async def health(request:HTTPRequest):
     p=request.app.state.providers
-    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.1.0'}
+    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.2.0'}
 
 @app.post('/triage',response_model=Response)
 async def triage(body:Request,request:HTTPRequest):
@@ -81,6 +82,13 @@ async def ui_triage(body:Request,request:HTTPRequest):
         result,meta=await asyncio.wait_for(assess(body,request.app.state.providers),timeout=35)
         return {'response':result.model_dump(),'ui':meta}
     except asyncio.TimeoutError:raise ProviderError('text_deadline')
+
+@app.post('/ui/safety')
+async def preview_safety(body:Request):
+    # Local-only check for an editable transcript; never calls either Groq account.
+    state=replay(body);flags=active_flags(state)
+    evidence=sorted(set(state.established_emergencies+emergency_evidence(state)))
+    return {'emergency_warning':bool(flags or evidence),'red_flags':flags,'emergency_evidence':evidence,'engine':'local_safety_preview'}
 
 async def validate_audio(content):
     # Decode using FFmpeg to validate the media, duration and actual signal.
@@ -123,8 +131,9 @@ async def transcribe(request:HTTPRequest,file:UploadFile=File(...),language:str=
         await validate_audio(content)
         try:transcript=await asyncio.wait_for(p.transcribe(content,'recording'+suffix,mime,language),timeout=45)
         except asyncio.TimeoutError:raise ProviderError('audio_deadline')
-        flags=[x.flag for x in detect_flags(transcript) if x.status=='affirmed']
-        return {'transcript':transcript,'emergency_warning':bool(flags),'detected_warning_signs':flags,'engine':'groq_audio_live','requires_confirmation':True}
+        state=State();state.merge(extract_local(transcript),transcript,0)
+        flags=active_flags(state);extra=emergency_evidence(state)
+        return {'transcript':transcript,'emergency_warning':bool(flags or extra),'detected_warning_signs':flags,'emergency_evidence':extra,'engine':'groq_audio_live','requires_confirmation':True}
     finally:await file.close()
 
 app.mount('/assets',StaticFiles(directory=ROOT/'frontend'),name='assets')

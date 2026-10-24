@@ -64,11 +64,25 @@ class FlagEvidence(Strict):
     quote: str
 
 class SymptomEvidence(Strict):
-    name: Literal['headache','joint_pain','rash','cough']
+    name: str = Field(min_length=1,max_length=80)
     status: Literal['affirmed','denied','unknown']
     quote: str
 
+Complaint = Literal['abdominal_pain','headache','vomiting','diarrhoea','cough','sore_throat','urinary','back_pain','joint_pain','rash','dizziness','injury','eye_problem','ear_pain','dental_pain','fatigue','fever','other']
+Feature = Literal['abdominal_tenderness','vomiting_blood','black_sticky_stool','blood_in_stool','sudden_worst_headache','new_one_sided_weakness','vision_loss','new_confusion','airway_swelling','cannot_swallow_saliva','bladder_change','saddle_numbness','can_keep_fluids','urine_retention','flank_pain','blood_in_urine','fever_with_complaint','cannot_bear_weight','nonblanching_rash']
+
+class ClinicalFinding(Strict):
+    name: Feature
+    status: Literal['affirmed','denied','historical','hypothetical']
+    quote: str = Field(min_length=1,max_length=6000)
+
 class Extraction(Strict):
+    complaint: Complaint | None = None
+    complaint_text: str | None = Field(default=None,max_length=300)
+    severity: Literal['mild','moderate','severe'] | None = None
+    pain_location: str | None = Field(default=None,max_length=160)
+    sudden_onset: bool | None = None
+    clinical_features: list[ClinicalFinding] = Field(default_factory=list,max_length=30)
     patient: str | None = None
     age_months: float | None = Field(default=None,ge=0,le=1440)
     duration_days: float | None = Field(default=None,ge=0,le=36500)

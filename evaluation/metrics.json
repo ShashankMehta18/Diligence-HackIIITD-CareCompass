@@ -6,7 +6,7 @@
   "validation_n": 103,
   "scope": "Descriptive evaluation: rules were authored after inspecting supplied templates; not a blind generalisation estimate. No retrieval or fitting is used.",
   "care": {
-    "macro_f1": 1.0,
+    "macro_f1": 0.7701149425287356,
     "labels": [
       "None",
       "home_nursing",
@@ -57,17 +57,17 @@
         0
       ],
       [
+        11,
         0,
         0,
         0,
         0,
-        0,
-        11
+        0
       ]
     ]
   },
   "urgency": {
-    "macro_f1": 1.0,
+    "macro_f1": 0.8799430559949384,
     "labels": [
       "None",
       "emergency",
@@ -88,9 +88,9 @@
         0
       ],
       [
+        11,
         0,
-        0,
-        60,
+        49,
         0
       ],
       [
@@ -112,16 +112,16 @@
   },
   "follow_up": {
     "recall": 1.0,
-    "precision": 1.0,
-    "false_positive_rate": 0.0,
+    "precision": 0.45,
+    "false_positive_rate": 0.11702127659574468,
     "tp": 9,
     "fn": 0,
-    "fp": 0,
-    "tn": 94
+    "fp": 11,
+    "tn": 83
   },
   "latency_ms": {
-    "median": 0.11926899969694205,
-    "p95": 0.22091200025897706,
+    "median": 0.22266499991019373,
+    "p95": 0.5192120001993317,
     "scope": "Core processing only; HTTP/network excluded in rules mode; live includes provider round trips"
   },
   "schema_compliance": 1.0,
@@ -130,9 +130,9 @@
     "scope": "Local label-agreement proxies; relevance labels may contain eligibility errors",
     "eligible_relevance_rows": 67,
     "excluded_empty_relevance_rows": 36,
-    "hit_at_1": 0.6119402985074627,
-    "recall_at_3": 0.7910447761194029,
-    "ndcg_at_3": 0.7127635330058341,
+    "hit_at_1": 0.5223880597014925,
+    "recall_at_3": 0.6567164179104478,
+    "ndcg_at_3": 0.5955720480982487,
     "id_active_role_radius_violation_count": 0,
     "procedural_skill_checks": "Covered independently in tests; roster scope assumptions documented"
   },
@@ -156,7 +156,7 @@
   },
   "by_language": {
     "English": {
-      "macro_f1": 1.0,
+      "macro_f1": 0.7894736842105262,
       "labels": [
         "None",
         "home_nursing",
@@ -207,17 +207,17 @@
           0
         ],
         [
+          5,
           0,
           0,
           0,
           0,
-          0,
-          5
+          0
         ]
       ]
     },
     "Hindi": {
-      "macro_f1": 1.0,
+      "macro_f1": 0.75,
       "labels": [
         "None",
         "home_nursing",
@@ -268,17 +268,17 @@
           0
         ],
         [
+          2,
           0,
           0,
           0,
           0,
-          0,
-          2
+          0
         ]
       ]
     },
     "Hinglish": {
-      "macro_f1": 1.0,
+      "macro_f1": 0.7222222222222222,
       "labels": [
         "None",
         "home_nursing",
@@ -329,12 +329,12 @@
           0
         ],
         [
+          4,
           0,
           0,
           0,
           0,
-          0,
-          4
+          0
         ]
       ]
     }

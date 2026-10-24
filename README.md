@@ -1,4 +1,4 @@
-# CareCompass · Team Diligence
+# CareCompass 0.2 · Team Diligence
 
 Runnable API-first synthetic care-navigation prototype. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking, dispatch or public deployment.
 
@@ -22,13 +22,10 @@ source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
 cp .env.example .env
 # Open .env in your editor and enter credentials there, never in chat.
-set -a
-source .env
-set +a
 python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Use localhost or HTTPS for microphone permission. Supported browsers depend on MediaRecorder; the app chooses WebM/Opus or MP4 and keeps text input available.
+The backend automatically loads `.env`; you do not need `source .env`. Existing environment variables take precedence. Use localhost or HTTPS for microphone permission. Supported browsers depend on MediaRecorder; the app chooses WebM/Opus or MP4 and keeps text input available.
 
 ## Groq account separation
 
@@ -40,7 +37,7 @@ Use localhost or HTTPS for microphone permission. Supported browsers depend on M
 
 ## API
 
-`POST /triage` is the strict organiser-facing response. `POST /ui/triage` calls the same core and wraps it with evidence, caregiver cards and concern metadata. `POST /transcribe` accepts multipart audio and returns an editable transcript. `GET /health` reports configured modes. `GET /openapi.json` exposes schemas. `/docs` is a self-contained API explorer with no CDN dependency.
+`POST /triage` is the strict organiser-facing response. `POST /ui/triage` calls the same core and wraps it with evidence, caregiver cards and concern metadata. `POST /transcribe` accepts multipart audio and returns an editable transcript. `GET /health` reports configured modes. `POST /ui/safety` performs a local-only safety preview for edited transcripts. `GET /openapi.json` exposes schemas. `/docs` is a self-contained API explorer with no CDN dependency.
 
 ```bash
 curl http://localhost:8000/triage \
@@ -66,6 +63,19 @@ The answer is interpreted against the preceding question and immediately escalat
 
 Invalid inputs return 422; excessive requests 413; unsupported media 415; provider failures 503 with a structured unavailable error. No clinical route is fabricated to hide an outage. Transport-level errors are outside the organiser success schema, an assumption requiring organiser confirmation.
 
+
+## Broader intake in version 0.2
+
+Stomach pain now receives complaint-specific questions, not the generic service menu. Dedicated pathways cover abdominal pain, headache, vomiting, diarrhoea, cough, sore throat, urinary symptoms, back pain, joint pain, rash, dizziness, injury, eye symptoms, ear pain, dental pain, fatigue and fever. Unfamiliar symptoms use a conservative `other` pathway and human-assessment fallback. This is broad complaint handling, not universal medical competence or diagnosis.
+
+Extraction includes the presenting complaint, actual complaint text, severity, pain location, onset, duration, progression, associated symptoms and evidence-backed clinical findings. Local and live Groq extraction share the expanded schema. An approved question policy chooses a relevant missing item, interprets yes/no in context, supplies answer buttons and stops after enough information or normally four questions. Unknown answers never become negative safety screens.
+
+Additional emergency evidence includes sudden severe abdominal pain, abdominal pain on touch, blood in vomit, black sticky stool, sudden extremely painful headache, vision loss, new confusion, airway swelling, inability to swallow saliva and back-pain neurological warning signs. Where no controlled organiser flag fits, the response still uses emergency_112/emergency with an empty controlled flag list and factual reasoning; no invented label is added. The organiser should confirm this documented contract gap. Emergency checks also run on voice transcripts and their edited text.
+
+Unresolved safety questions or prompt in-person assessment needs suppress routine matching/booking. Other symptoms with sufficient context use the available same-day doctor consultation as a coordination pathway, without implying it replaces necessary in-person or specialist care. Explicit procedure requests keep the direct workflow.
+
+The old 46-test count and baseline scores are superseded by the results in `docs/VERIFICATION.md` and `evaluation_all/metrics.json`. The expanded prototype deliberately asks safety questions on some cases that the supplied labels route immediately; higher supplied-label agreement is not claimed. See `docs/BROAD_INTAKE.md` for source-to-rule mappings and known limitations, and `UPGRADE.md` for local replacement steps.
+
 ## Run checks and evaluation
 
 ```bash
@@ -75,11 +85,11 @@ python scripts/evaluate.py --split validation --out evaluation
 python scripts/evaluate.py --split all --out evaluation_all
 ```
 
-The suite exercises all nine emergency pathways, negation/history/hypothetical cases, late emergencies, short replies, corrections, patient isolation, eligibility, API invariants, real FFmpeg decoding/silence rejection, provider failures, separate account headers and mocked transcription. Provider stubs are not live API verification.
+The suite exercises 18 complaint categories including a conservative `other` fallback, plus all nine controlled emergency pathways, negation/history/hypothetical cases, late emergencies, short replies, corrections, patient isolation, eligibility, API invariants, real FFmpeg decoding/silence rejection, provider failures, separate account headers and mocked transcription. Provider stubs are not live API verification.
 
-Measured rules baseline on all 340 provided rows: care macro-F1 **0.8698**, urgency macro-F1 **0.8736**, emergency recall **56/56**, emergency precision **1.0**, schema compliance **1.0**. Matching label-agreement proxies: Hit@1 **0.4976**, Recall@3 **0.5909**, NDCG@3 **0.5452** on 209 rows with nonempty relevance lists; 131 empty lists excluded. No ID/active/role/radius violations in this run. Original red-flag micro recall is **0.3214** because 38 emergency annotations use unsupported flags; proposed semantic corrections yield **1.0**, without applying changes to originals.
+Measured rules baseline on all 340 provided rows: care macro-F1 **0.8219**, urgency macro-F1 **0.8514**, emergency recall **56/56**, emergency precision **1.0**, schema compliance **1.0**. Matching label-agreement proxies: Hit@1 **0.4689**, Recall@3 **0.5478**, NDCG@3 **0.5077** on 209 rows with nonempty relevance lists; 131 empty lists excluded. No ID/active/role/radius violations in this run. Original red-flag micro recall is **0.3214** because 38 emergency annotations use unsupported flags; proposed semantic corrections yield **1.0**, without applying changes to originals.
 
-The scenario-group-disjoint validation subset has 103 rows; its easier sampled families produce 1.0 care/urgency F1. Do **not** present this as a blind held-out or hidden-test result: baseline rules were authored after inspecting the supplied dataset. No training/retrieval is used. `evaluation/split.json` publishes every grouping and split. Full and grouped confusion matrices, language results and core-only latency are in the metrics files. No official combined score or clinical validation is claimed.
+The scenario-group-disjoint validation subset has 103 rows; care F1 is 0.7701 and urgency F1 is 0.8799. Some organiser labels immediately route cases that this version asks to clarify; the broader intake prioritises obtaining decision-relevant safety information. Do **not** present this as a blind held-out or hidden-test result: baseline rules were authored after inspecting the supplied dataset. No training/retrieval is used. `evaluation/split.json` publishes every grouping and split. Full and grouped confusion matrices, language results and core-only latency are in the metrics files. No official combined score or clinical validation is claimed.
 
 ## Hidden-test exporter
 

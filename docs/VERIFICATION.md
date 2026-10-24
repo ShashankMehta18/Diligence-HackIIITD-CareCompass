@@ -1,36 +1,41 @@
-# Verification record
+# Verification record - CareCompass 0.2
 
-Measured in this working session, 24 October 2026. Synthetic data only.
+Measured in this session on 24 October 2026. Synthetic data only; this supersedes the 0.1 verification record.
 
 | Check | Result |
 |---|---|
-| Automated suite | 46 passed, one Starlette TestClient deprecation warning; no failures |
-| Python dependencies | `pip check`: no broken requirements; pinned requirements dry-run satisfied |
-| JavaScript parsing | `node --check frontend/app.js`: passed |
-| Real local HTTP process | Uvicorn started; GET /health, /, /assets/app.js, /openapi.json returned 200 |
-| Real HTTP triage | Uncontrolled bleeding returned emergency_112/emergency, severe_bleeding, no matches or question |
-| Audio media validation | Synthetic tone decoded; silence and invalid container rejected in tests |
-| Account separation | Independent text/audio client instances and distinct synthetic auth headers verified with HTTPX MockTransport |
-| Provider handling | Mocked rate limit retries bounded to two; malformed extraction rejected; local emergency bypass survives outage |
-| Exporter | 340 supplied-example rows exported with source IDs and provisional columns; this is not hidden-test output |
-| Evaluation | Full 340-row and 103-row scenario-group-disjoint descriptive results included with split, predictions, confusion matrices and latency |
-| Approach write-up | Exactly two PDF pages, embedded fonts, rendered and visually inspected |
-| Browser screenshot/visual QA | Not completed: no Chromium executable; attempted download returned an invalid archive. No browser success claimed |
-| Live Groq calls | Not run: no account credentials supplied |
-| Real microphone transcription | Not run; synthetic media and stubbed transcription adapter tested |
-| STT model comparison | Script included; no representative recordings or credentials, so no measured winner claimed |
-| Docker build/run | Not run: Docker unavailable in this environment. Dockerfile/Compose provided |
-| Hidden-test predictions | Cannot generate without hidden input and confirmed CSV specification |
-| Recorded demo video | Storyboard included; video still needs screen/microphone recording by the team |
-| Clinical review | Not performed; prototype is not clinically validated |
+| Python suite | 114 passed; one Starlette TestClient deprecation warning, no failures |
+| Complaint coverage checks | 17 named complaint families plus other; English, Hindi and Hinglish examples |
+| Safety tests | Existing nine controlled flags plus extended abdominal, headache, airway, vision, confusion, urinary and back-pain cases; negation, history, hypothetical, late-emergency and correction cases |
+| Conversation tests | Contextual yes/no including reverse polarity, duration corrections, supplied facts skipped, four-question cap, patient changes, associated complaint emergency and duration isolation |
+| Real HTTP / DOM integration | Passed with a real Uvicorn process and jsdom: stomach flow, choices, matching, simulated booking, emergency bypass, Hindi and edited-transcript safety. No DOM runtime errors |
+| JavaScript parsing | node --check frontend/app.js passed |
+| Dependency health | pip check passed; python-dotenv added for automatic non-shell .env loading |
+| Audio checks | Real FFmpeg tone/silence/invalid-media checks and stubbed transcription adapter pass |
+| Account separation | Independent clients and distinct synthetic authentication headers tested; no credential sharing |
+| Provider failures | Rate-limit and malformed-output handling tested; local emergencies bypass broken text provider |
+| Exporter | Re-generated 340 supplied-example rows, IDs preserved; columns provisional; not hidden-test predictions |
+| Live Groq / real microphone | Not tested: user credentials and representative recordings are not available here |
+| Visual browser / microphone QA | Not performed; jsdom checks behaviour, not visual rendering or browser media permissions |
+| Docker | Configuration supplied, execution not tested here |
+| Clinical validation | Not performed; source-backed prototype pathways still need mentor review |
 
-## Remaining before submission
+## Actual supplied-data results
 
-1. Enter two separate Groq account credentials in local `.env`, load them or run Compose, then test text and voice live. Check current model access in each account.
-2. Run the manual flows in DEMO_SCRIPT.md on mobile and desktop, including permission denial, cancel, silence, retries, negation and corrected numbers. Browser-level controls have not been visually verified here.
-3. Run Docker locally if Docker is the chosen delivery path. The native Python app was started and exercised over HTTP.
-4. Obtain hidden-test input/CSV columns and export with the same core. Do not submit the supplied-example CSV as hidden predictions.
-5. Record the <=3-minute video. Upload/push the repository yourself only when authorised; no remote repository or deployment was created.
-6. Confirm organiser assumptions: future availability, history item schema, urgent in-person care mapping, noisy annotations, clinical thresholds and AI-assistance/originality disclosure.
+| Metric | All 340 examples | Scenario-group-disjoint 103-row subset |
+|---|---:|---:|
+| Care macro-F1 | 0.8219 | 0.7701 |
+| Urgency macro-F1 | 0.8514 | 0.8799 |
+| Emergency recall | 56/56 | 18/18 |
+| Schema compliance | 1.0 | 1.0 |
+| Matching Hit@1 | 0.4689 | 0.5224 |
+| Matching Recall@3 | 0.5478 | 0.6567 |
+| Matching NDCG@3 | 0.5077 | 0.5956 |
 
-The local rules baseline is functional without keys. The API integrations are implemented and stub-tested; their live operation remains unverified. This distinction is visible in the interface and health endpoint.
+These are descriptive label-agreement results, not blind hidden-test results. Rules were authored after inspecting the dataset. Broader intake now asks questions on some cases that organiser labels immediately route, reducing agreement versus version 0.1 (care 0.8698, urgency 0.8736). No official score improvement is claimed. All 56 labelled emergencies remain detected. Matching metrics exclude empty relevance lists and inherit noisy-reference limitations; ID/active/role/radius violations are zero in this run.
+
+Complete matrices, language results, red-flag noise comparisons and core-only latency measurements are in evaluation_all/metrics.json and evaluation/metrics.json. Provider modes are separated. Independent challenge tests are in tests/test_broad_intake.py and are not training data or clinical validation.
+
+## Still required on the team's laptop
+
+Follow UPGRADE.md, retain your private .env, confirm /health version 0.2.0, test both accounts live, check real microphone permissions/cancel/retry, verify mobile visuals and run Docker if used. Record the demo and obtain hidden input/official CSV columns before generating final predictions. Confirm the out-of-vocabulary emergency mapping with organisers. No repository push, public deployment, real booking or dispatch was performed.

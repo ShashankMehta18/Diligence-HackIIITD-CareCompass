@@ -1,0 +1,84 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 6C51-B734
+D:.
+|   .dockerignore
+|   .env.example
+|   .gitignore
+|   compose.yaml
+|   Dockerfile
+|   package-lock.json
+|   package.json
+|   project-structure.txt
+|   README.md
+|   requirements-dev.txt
+|   requirements.txt
+|   UPGRADE.md
+|   
++---backend
+|   |   __init__.py
+|   |   
+|   \---app
+|           complaints.py
+|           config.py
+|           core.py
+|           intake.py
+|           main.py
+|           matching.py
+|           providers.py
+|           schemas.py
+|           __init__.py
+|           
++---data
+|       caregivers.csv
+|       multi_turn_examples.jsonl
+|       ORGANISER_PROBLEM_STATEMENT.pdf
+|       ORGANISER_README.md
+|       ORGANISER_START_HERE.md
+|       triage_dataset.jsonl
+|       triage_dataset_flat.csv
+|       
++---docs
+|   |   Approach.pdf
+|   |   ARCHITECTURE_AND_POLICY.md
+|   |   BROAD_INTAKE.md
+|   |   DEMO_SCRIPT.md
+|   |   VERIFICATION.md
+|   |   
+|   \---audit
+|           audit_summary.json
+|           proposed_corrections.json
+|           suspected_matching_issues.json
+|           template_inventory.json
+|           
++---evaluation
+|       metrics.json
+|       predictions.jsonl
+|       split.json
+|       
++---evaluation_all
+|       metrics.json
+|       predictions.jsonl
+|       provisional_example_predictions.csv
+|       split.json
+|       
++---frontend
+|       app.js
+|       docs.css
+|       docs.html
+|       docs.js
+|       index.html
+|       style.css
+|       
++---scripts
+|       benchmark_stt.py
+|       evaluate.py
+|       export_predictions.py
+|       
+\---tests
+        test_api.py
+        test_audio.py
+        test_broad_intake.py
+        test_core.py
+        test_providers.py
+        ui_smoke.cjs
+        

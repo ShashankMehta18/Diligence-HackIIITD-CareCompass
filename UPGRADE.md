@@ -1,40 +1,58 @@
-# Run the broader SehatSaathi version locally
+# Update and run version 0.4
 
-Version 0.2 expands complaint extraction, follow-up selection, safety checks and tests. The organiser-facing response schema is unchanged.
+The ZIP contains the complete updated project and a guarded updater. Use the updater for an existing GitHub clone: it copies only release changes, preserves `.git`, `.env`, dependencies and unchanged team files, and refuses to overwrite edits made since the uploaded ZIP. No Git history is reset, and nothing is pushed or deployed automatically.
 
-1. Stop the old running server with **Control + C**.
-2. Extract the updated ZIP into a new folder. Keep your original project folder until the update works.
-3. Open Terminal in the new `SehatSaathi` folder (type `cd `, drag that folder into Terminal, then press Enter).
-4. Create a fresh environment and install the updated dependencies:
+1. Extract the ZIP. The outer `CareCompass_Update` folder contains `APPLY_UPDATE.py`, `update_manifest.json`, and the complete inner `CareCompass` source folder.
+2. In Terminal, enter the outer folder. Example if extracted on Desktop:
 
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-```
+   ```bash
+   cd "$HOME/Desktop/CareCompass_Update"
+   ```
 
-5. Copy **only your existing `.env` settings file** from the previous project to this new folder. Keep the keys private. Do not copy the old `.venv` directory. If you prefer creating a new settings file, use the following only when `.env` does not already exist:
+3. Check your original Git clone (replace the example path if needed):
 
-```bash
-cp .env.example .env
-open -e .env
-```
+   ```bash
+   git -C "$HOME/Desktop/Carecompass" status
+   git -C "$HOME/Desktop/Carecompass" pull --ff-only
+   python3 APPLY_UPDATE.py --target "$HOME/Desktop/Carecompass"
+   ```
 
-Enter your two existing Groq account keys and save. Settings must have `NAME="value"` on one line. This version loads `.env` automatically, so **do not run `source .env`**. An explicitly exported shell variable takes precedence; a fresh Terminal avoids stale values from the old setup.
+   Commit your own outstanding edits first. If pull or the updater reports conflicts, stop and merge with your teammate. Do not copy the whole ZIP over the repository to bypass this check. Team edits since the uploaded ZIP may need manual merging.
 
-6. Start the updated app:
+4. If the dry run succeeds, apply and review:
 
-```bash
-python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --no-access-log
-```
+   ```bash
+   python3 APPLY_UPDATE.py --target "$HOME/Desktop/Carecompass" --apply
+   cd "$HOME/Desktop/Carecompass"
+   git diff --stat
+   git diff
+   ```
 
-7. Open http://localhost:8000 and hard-refresh with **Command + Shift + R**. At http://localhost:8000/health, `version` should be `0.2.0`.
-8. Try **Stomach pain**, answer **Mild**, then **No** to pain on touch, then give a duration and location. Try **Severe** and a sudden onset in a separate conversation to see emergency branching. All examples must be synthetic.
-9. For checks, open a second Terminal in the same folder, activate `.venv` and run:
+   Changed original files are backed up beside your repository. Keep the backup until verification. Its rollback manifest lists newly added files; an interrupted application may require manual restoration. Credentials are never copied or backed up.
 
-```bash
-python -m pytest -q
-```
+5. Activate the original virtual environment and test/run:
 
-Text works in labelled local rules mode without keys. Live Groq operation depends on your credentials/model access and remains to be tested on your laptop. FFmpeg is still required for voice: `brew install ffmpeg` on Mac if needed. No public deployment, real booking or dispatch is included.
+   ```bash
+   source .venv/bin/activate
+   python -m pip install -r requirements-dev.txt
+   python -m pytest -q
+   python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --no-access-log
+   ```
 
+   If `.venv` is missing, first run `python3 -m venv .venv`. Keep your existing private `.env`; do not run `source .env`. Stop an older server with Control+C before starting this one.
+
+6. Open http://localhost:8000 and hard-refresh with Command+Shift+R. http://localhost:8000/health must report version `0.4.0`. Swagger is at `/docs`; the custom explorer is at `/explorer`.
+7. Test all four ear-pain follow-ups, unknown answers for dizziness, knee questions and a known emergency phrase. Unresolved final results must show human assessment without booking. Test your Groq accounts and microphone locally; real live calls and microphone behavior were not verified here.
+8. Use `git status` and the outer `update_manifest.json` to review the changed files. Stage only intended source/test/documentation files, then:
+
+   ```bash
+   git diff --cached --stat
+   git commit -m "Improve safety intake and ensure final assessment after follow-ups"
+   git push
+   ```
+
+   Do not stage `.env`, dependencies or backups. Deployment changes only after this commit is deployed. Check version 0.4.0 and the final-answer flows on the deployed app too.
+
+For a fresh local run, enter the inner `CareCompass` folder, create/activate a Python 3.12+ virtual environment, install `requirements-dev.txt`, copy `.env.example` to `.env` only if missing, and start Uvicorn. This fresh copy has no Git history. `TEXT_MODE=rules` works offline for text; voice needs FFmpeg and an audio key.
+
+See `docs/SAFETY_UPDATE.md`, `docs/VERIFICATION.md` and `evaluation_safety/README.md` for measured results and limits.

@@ -1,0 +1,13 @@
+{
+  "version": "safety-challenges-1",
+  "sha256": "cc950ac0d0484f495f0ba8f6fb37580958b61fb2a0cd26df0313521a869d0441",
+  "cases": 216,
+  "scenario_groups": 90,
+  "provenance": "Developer/AI-authored before patch; independent of organiser data, NOT clinician-reviewed or blind held-out.",
+  "usage": "Development regression. Do not train on this file or claim clinical accuracy from its results.",
+  "languages": [
+    "en",
+    "hi",
+    "hinglish"
+  ]
+}

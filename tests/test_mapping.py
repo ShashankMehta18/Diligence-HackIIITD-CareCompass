@@ -65,14 +65,14 @@ def test_nasal_congestion_routes_to_ent():
     assert docs and all(supports(d, 'sinus_symptoms', 'nose_problem', 'allergy_concern') for d in docs)
 
 def test_palpitations_route_to_cardiology():
-    r, u, _ = drive('my heart is racing and I feel palpitations', ['mild', 'two days'])
+    r, u, _ = drive('my heart is racing and I feel palpitations', ['no', 'no', 'mild', 'two days'])
     assert u['state']['facts']['complaint'] == 'cardiac'
     assert r.care_type == 'teleconsultation'
     docs = matched(r)
     assert docs and all(supports(d, 'palpitations', 'blood_pressure', 'heart_concern') for d in docs)
 
 def test_numbness_routes_to_neurology():
-    r, u, _ = drive('my fingers feel numb and tingling', ['mild', 'two days'])
+    r, u, _ = drive('my fingers feel numb and tingling', ['no', 'no', 'mild', 'two days'])
     assert u['state']['facts']['complaint'] == 'neuro'
     assert r.care_type == 'teleconsultation'
     docs = matched(r)

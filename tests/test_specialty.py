@@ -69,7 +69,7 @@ def test_complaint_specific_first_question(text, family, first_q):
     assert r.follow_up_question and r.care_type is None
 
 def test_knee_pain_matches_orthopedics_not_generalists():
-    r, _, _ = drive('I have knee pain', ['no', 'no', 'no', 'two days'])
+    r, _, _ = drive('I have knee pain', ['no', 'no', 'yes', 'no'])
     assert r.care_type == 'teleconsultation'
     docs = matched_doctors(r)
     assert docs and all(supports(d, 'knee_pain', 'joint_pain') for d in docs)
@@ -138,7 +138,7 @@ def test_unknown_complaint_gets_no_routine_booking():
 
 def test_catheter_nebulization_post_surgical_elderly_match_medics():
     cases = [
-        ('catheter is leaking', ['yes', 'no', 'two days'], 'catheter_care'),
+        ('need catheter care', ['no', 'no', 'two days'], 'catheter_care'),
         ('need nebulization at home', ['no', 'yes', 'two days'], 'nebulization'),
         ('post surgery care at home', ['no', 'no', 'two days'], 'post_surgical_care'),
         ('elderly care for my grandmother at home', ['yes', 'yes', 'two days'], 'elderly_care'),

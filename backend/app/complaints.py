@@ -197,6 +197,7 @@ class Question:
     yes_affirms: bool = True
     choices: tuple = ('Yes','No','Not sure')
     service: str | None = None   # a "yes" answer requests this home service
+    flag: str | None = None
 
 BROAD_QUESTIONS={
  'symptom_age':Question('How old is the person with these symptoms?','इन लक्षणों वाले व्यक्ति की उम्र कितनी है?',field='age_months',choices=()),
@@ -236,14 +237,14 @@ BROAD_QUESTIONS={
  'fluids_normal':Question('Is the person able to eat and drink normally?','क्या व्यक्ति सामान्य रूप से खा-पी रहा है?',feature='poor_intake',yes_affirms=False),
  'wound_leaking':Question('Is the wound open or leaking?','क्या घाव खुला है या उससे कुछ निकल रहा है?',feature='wound_leaking'),
  'wound_redness':Question('Is there redness or swelling around the wound?','क्या घाव के आसपास लाली या सूजन है?',feature='wound_redness'),
- 'sugar_check':Question('Do you need a blood sugar check at home?','क्या घर पर ब्लड शुगर चेक चाहिए?',service='bp_sugar'),
- 'foot_sore':Question('Is there a foot sore or wound that is not healing?','क्या पैर में कोई घाव है जो भर नहीं रहा?',service='dressing'),
+ 'sugar_check':Question('Do you need a blood sugar check at home?','क्या घर पर ब्लड शुगर चेक चाहिए?',feature='sugar_check_requested',service='bp_sugar'),
+ 'foot_sore':Question('Is there a foot sore or wound that is not healing?','क्या पैर में कोई घाव है जो भर नहीं रहा?',feature='diabetic_foot_wound',service='dressing'),
  'foot_wound':Question('Is there any wound on the painful foot?','क्या दर्द वाले पैर पर कोई घाव है?',service='dressing'),
  'catheter_block':Question('Is there blockage or leakage from the catheter?','क्या कैथेटर में ब्लॉकेज या लीकेज है?',feature='catheter_blockage'),
  'catheter_pain':Question('Is there pain or burning with the catheter?','क्या कैथेटर से दर्द या जलन है?',feature='catheter_pain'),
  'nebulizer_home':Question('Is a nebulizer machine available at home?','क्या घर पर नेब्युलाइज़र मशीन है?',feature='nebulizer_available'),
- 'vitals_bp':Question('Should blood pressure be checked?','क्या ब्लड प्रेशर चेक करना है?',service='bp_sugar'),
- 'vitals_sugar':Question('Should blood sugar be checked?','क्या ब्लड शुगर चेक करना है?',service='bp_sugar'),
+ 'vitals_bp':Question('Should blood pressure be checked?','क्या ब्लड प्रेशर चेक करना है?',feature='bp_check_requested',service='bp_sugar'),
+ 'vitals_sugar':Question('Should blood sugar be checked?','क्या ब्लड शुगर चेक करना है?',feature='sugar_check_requested',service='bp_sugar'),
  'postop_redness':Question('Is there redness or leaking from the surgical wound?','क्या ऑपरेशन के घाव से लाली या रिसाव है?',feature='surgical_wound_issue'),
  'postop_stitches':Question('Is this for stitch removal?','क्या यह टांके कटवाने के लिए है?',feature='stitch_removal'),
  'bedsores':Question('Are there any bedsores?','क्या कोई बेडसोर (बिस्तर के घाव) हैं?',feature='bedsores'),
@@ -253,7 +254,10 @@ BROAD_QUESTIONS={
  'sleep_with':Question('Is sleep also disturbed?','क्या नींद भी खराब है?',feature='sleep_disturbed'),
  'snoring':Question('Is there loud snoring or pauses in breathing during sleep?','क्या नींद में ज़ोर से खर्राटे आते हैं या सांस रुकती है?',feature='sleep_apnea_signs'),
  'blood_cough':Question('Are you coughing up any blood?','क्या खांसी में खून आ रहा है?',feature='coughing_blood'),
- 'hearing_sudden':Question('Did the hearing loss start suddenly?','क्या सुनाई देना अचानक कम हुआ है?',feature='sudden_hearing_loss'),
+ 'hearing_sudden':Question('Have you developed any sudden hearing loss?','क्या सुनाई देना अचानक कम हुआ है?',feature='sudden_hearing_loss'),
+ 'cardiac_chest':Question('Do you have chest pain, pressure or tightness with the heart symptoms?','क्या दिल की तकलीफ़ के साथ सीने में दर्द, दबाव या जकड़न है?',flag='chest_pain'),
+ 'stroke_speech':Question('Have you suddenly developed a drooping face or difficulty speaking?','क्या अचानक चेहरा टेढ़ा हुआ है या बोलने में दिक्कत हुई है?',flag='stroke_symptoms'),
+ 'immediate_harm':Question('Are you in immediate danger of harming yourself right now?','क्या अभी आपको खुद को नुकसान पहुँचाने का तत्काल खतरा है?',flag='suicidal_ideation'),
 }
 
 YES=r'(?:yes|yeah|haan|han|ji|हाँ|हां|जी)'
@@ -343,18 +347,16 @@ def broad_concern(state):
     if c=='urinary' and (f.fever or has(state,'flank_pain')):return 'Urinary symptoms with fever or flank pain need prompt in-person medical assessment.'
     if has(state,'coughing_blood'):return 'Coughing up blood needs prompt medical assessment.'
     if has(state,'sudden_hearing_loss'):return 'Sudden hearing loss needs urgent same-day assessment.'
+    if c=='catheter' and has(state,'catheter_blockage'):return 'Reported catheter blockage or leakage needs prompt advice from a clinician or community nurse; routine booking must not delay assessment.'
+    if c=='post_surgical' and has(state,'surgical_wound_issue'):return 'Reported redness or leakage from a surgical wound needs prompt clinical assessment.'
+    if c=='diabetes' and has(state,'diabetic_foot_wound'):return 'A non-healing foot wound with diabetes needs prompt clinical assessment.'
+    if c=='menstrual' and has(state,'heavy_bleeding'):return 'Reported heavy menstrual bleeding needs clinical assessment; this chat cannot establish that routine home care is suitable.'
+    if c in ('knee_pain','joint_pain','injury') and has(state,'joint_movement_difficulty'):return 'Reported difficulty moving the painful joint needs prompt in-person assessment.'
     if c in ('injury','ankle_pain','knee_pain','foot_pain','hip_pain','wrist_pain') and has(state,'cannot_bear_weight'):return 'An injury that prevents weight bearing needs prompt in-person assessment.'
     if f.age_months is not None and f.age_months<3 and c and c!='fever':return 'New symptoms in a very young infant need prompt clinician assessment; this prototype cannot establish suitability for home care.'
     return None
 
-def question_candidates(state):
-    f=state.facts;c=f.complaint
-    if not c or c=='fever':return []
-    # An established urgent recommendation should not wait for an interview.
-    # One severity-related safety question can still change it to emergency.
-    if c=='abdominal_pain' and f.severity=='severe' and f.sudden_onset is None:return ['sudden_pain']
-    if broad_concern(state):return []
-    plans={
+QUESTION_PLANS={
       'abdominal_pain':['abdominal_severity','abdominal_touch','symptom_duration','abdominal_location'],
       'headache':['headache_sudden','one_sided_weakness','symptom_severity','symptom_duration'],
       'vomiting':['blood_vomit','keep_fluids','symptom_duration','symptom_age'],
@@ -364,7 +366,7 @@ def question_candidates(state):
       'urinary':['urine_retention','associated_fever','flank_pain','symptom_duration'],
       'back_pain':['bladder_change','saddle_numbness','leg_pain','symptom_severity','symptom_duration'],
       'wound':['wound_leaking','wound_redness','symptom_duration'],
-      'knee_pain':['joint_swelling','joint_moving','joint_injury','symptom_duration'],
+      'knee_pain':['joint_swelling','joint_moving','bear_weight','joint_injury','symptom_duration'],
       'shoulder_pain':['lifting_arm','joint_injury','joint_stiffness','symptom_duration'],
       'ankle_pain':['joint_swelling','bear_weight','joint_injury','symptom_duration'],
       'neck_pain':['joint_stiffness','arm_pain','joint_injury','symptom_duration'],
@@ -381,19 +383,19 @@ def question_candidates(state):
       'bedridden':['daily_care','bedsores','symptom_duration'],
       'elderly_care':['daily_care','elderly_meds','symptom_duration'],
       'menstrual':['heavy_bleeding','symptom_severity','symptom_duration'],
-      'anxiety':['sleep_with','symptom_severity','symptom_duration'],
+      'anxiety':['immediate_harm','sleep_with','symptom_severity','symptom_duration'],
       'sleep_problem':['snoring','symptom_severity','symptom_duration'],
       'hand_pain':['joint_swelling','grip_difficulty','joint_injury','symptom_duration'],
       'muscle_pain':['symptom_severity','joint_injury','symptom_duration'],
       'nasal':['symptom_severity','associated_fever','symptom_duration'],
-      'cardiac':['symptom_severity','symptom_duration'],
-      'neuro':['symptom_severity','symptom_duration'],
+      'cardiac':['cardiac_chest','breathing','symptom_severity','symptom_duration'],
+      'neuro':['one_sided_weakness','stroke_speech','symptom_severity','symptom_duration'],
       'kidney':['symptom_severity','symptom_duration'],
       'thyroid':['symptom_severity','symptom_duration'],
       'nutrition':['symptom_severity','symptom_duration'],
       'blood':['symptom_severity','symptom_duration'],
       'rash':['airway_swelling','associated_fever','symptom_duration'],
-      'dizziness':['one_sided_weakness','symptom_severity','symptom_duration'],
+      'dizziness':['one_sided_weakness','stroke_speech','symptom_severity','symptom_duration'],
       'injury':['symptom_severity','symptom_duration'],
       'eye_problem':['vision_loss','symptom_severity','symptom_duration'],
       'ear_pain':['symptom_severity','hearing_sudden','associated_fever','symptom_duration'],
@@ -401,6 +403,15 @@ def question_candidates(state):
       'fatigue':['symptom_severity','symptom_duration','symptom_age'],
       'other':['symptom_detail','symptom_severity','symptom_duration','symptom_change'],
     }
+
+def question_candidates(state):
+    f=state.facts;c=f.complaint
+    if not c or c=='fever':return []
+    # An established urgent recommendation should not wait for an interview.
+    # One severity-related safety question can still change it to emergency.
+    if c=='abdominal_pain' and f.severity=='severe' and f.sudden_onset is None:return ['sudden_pain']
+    if broad_concern(state):return []
+    plans=QUESTION_PLANS
     plan=plans[c]
     if c=='injury' and re.search(r'ankle|knee|foot|leg|arm|wrist|टखने|पैर|घुटने',norm(f.complaint_text or '')):
         plan=['symptom_severity','bear_weight','symptom_duration']
@@ -410,21 +421,16 @@ def question_candidates(state):
     known=features(state)
     for q in plan:
         if q in state.asked:continue
-        if q=='breathing':
-            if 'breathlessness' not in state.flags:result.append(q)
+        if q=='breathing' or BROAD_QUESTIONS[q].flag:
+            from .safety_policy import question_resolved
+            if not question_resolved(state,q):result.append(q)
             continue
         spec=BROAD_QUESTIONS[q]
         if spec.field and getattr(f,spec.field) is not None:continue
-        if spec.feature and (spec.feature in known or spec.feature=='fever_with_complaint' and f.fever is not None):continue
+        if spec.feature and (spec.feature in known and known[spec.feature].status in ('affirmed','denied') or spec.feature=='fever_with_complaint' and f.fever is not None):continue
         result.append(q)
     return result
 
 def complete_enough(state):
-    """Unresolved answers are not converted into reassuring negative screens."""
-    c=state.facts.complaint
-    if not c:return False
-    critical={'abdominal_pain':['abdominal_tenderness'],'headache':['sudden_worst_headache','new_one_sided_weakness'],'vomiting':['vomiting_blood','can_keep_fluids'],'diarrhoea':['can_keep_fluids','blood_in_stool'],'sore_throat':['cannot_swallow_saliva'],'urinary':['urine_retention'],'back_pain':['bladder_change','saddle_numbness'],'rash':['airway_swelling'],'eye_problem':['vision_loss'],'dental_pain':['airway_swelling'],'wound':['wound_leaking','wound_redness'],'catheter':['catheter_blockage']}.get(c,[])
-    known=features(state)
-    if c=='cough' and 'breathlessness' not in state.flags:return False
-    if c=='nebulization' and 'breathlessness' not in state.flags:return False
-    return c!='other' and all(k in known and known[k].status in ('affirmed','denied') for k in critical)
+    from .safety_policy import safety_gaps
+    return not safety_gaps(state)

@@ -24,7 +24,7 @@ async def lifespan(app):
 
 app = FastAPI(
     title="CareCompass · Diligence",
-    version="0.2.0",
+    version="0.4.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url=None,
@@ -83,7 +83,7 @@ async def provider_error(request,error):
 @app.get('/health')
 async def health(request:HTTPRequest):
     p=request.app.state.providers
-    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.2.0'}
+    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.4.0'}
 
 @app.post('/triage',response_model=Response)
 async def triage(body:Request,request:HTTPRequest):
@@ -96,8 +96,18 @@ async def triage(body:Request,request:HTTPRequest):
 async def ui_triage(body:Request,request:HTTPRequest):
     try:
         result,meta=await asyncio.wait_for(assess(body,request.app.state.providers),timeout=35)
-        return {'response':result.model_dump(),'ui':meta}
-    except asyncio.TimeoutError:raise ProviderError('text_deadline')
+    except (ProviderError,asyncio.TimeoutError):
+        # Text-provider failures must not strand the interview on its last
+        # question. Replay the same submitted answer through the local policy.
+        # Keep /triage strict and its provider-error contract unchanged.
+        result,meta=await assess(body,mode='rules')
+        meta['engine']='rules_fallback'
+        meta['provider_status']='unavailable'
+        meta['notice']='The text service is unavailable. Local rules were used; this is not a diagnosis.'
+        if result.follow_up_question is None and result.care_type!='emergency_112':
+            result=Response(follow_up_question=None,care_type='teleconsultation',urgency='same_day',red_flags=[],matched_caregivers=[],reasoning='The text service is unavailable. The available information cannot establish a safe routine pathway. Seek human clinical assessment. No caregiver has been booked or dispatched.')
+            meta.update(assessment_status='needs_human_assessment',routine_booking_allowed=False,caregivers=[])
+    return {'response':result.model_dump(),'ui':meta}
 
 @app.post('/ui/safety')
 async def preview_safety(body:Request):

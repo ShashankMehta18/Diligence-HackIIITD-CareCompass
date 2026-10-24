@@ -1,7 +1,7 @@
 {
   "name": "carecompass-ui-qa",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "Optional DOM integration tests only; the app needs no Node build",
   "scripts": {"test:ui": "node tests/ui_smoke.cjs"},
   "devDependencies": {"jsdom": "26.1.0"}

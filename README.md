@@ -1,6 +1,6 @@
-# SehatSaathi 0.2 · Team Diligence
+# SehatSaathi 0.4 · Team Diligence
 
-Runnable API-first synthetic care-navigation prototype. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking, dispatch or public deployment.
+Runnable API-first synthetic care-navigation prototype. Version 0.4 adds multilingual warning recognition, unresolved-information gating, a separate development evaluation, and a final-answer/outage fix. See `UPGRADE.md` before updating an existing Git clone. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking, dispatch or public deployment.
 
 ## Start in Docker (recommended)
 
@@ -32,12 +32,12 @@ The backend automatically loads `.env`; you do not need `source .env`. Existing 
 - Account A: `GROQ_TEXT_API_KEY`, `GROQ_TEXT_MODEL=openai/gpt-oss-20b`. Structured extraction via strict JSON schema; local policy controls final routing.
 - Account B: `GROQ_AUDIO_API_KEY`, `GROQ_STT_MODEL=whisper-large-v3`. Transcription preserves original language; it does not automatically translate to English.
 - Clients are explicitly constructed separately in `backend/app/providers.py`. No default SDK account, credential sharing or quota bypass. Both keys remain backend-only.
-- `TEXT_MODE=auto` uses live text when a key is configured; `rules` always uses the baseline; `live` requires a working text provider and fails closed otherwise. Local established emergencies bypass the provider in every mode.
+- `TEXT_MODE=auto` uses live text when a key is configured; `rules` always uses the baseline; `live` requires a working text provider on the strict API. The UI uses an explicitly labelled local fallback when that text service fails. Local established emergencies bypass the provider in every mode.
 - Current official model/structured-output availability was checked in Groq documentation. No actual credentials or recordings were supplied; live calls and model comparisons remain unverified. Tests use HTTP transport stubs and label them as such.
 
 ## API
 
-`POST /triage` is the strict organiser-facing response. `POST /ui/triage` calls the same core and wraps it with evidence, caregiver cards and concern metadata. `POST /transcribe` accepts multipart audio and returns an editable transcript. `GET /health` reports configured modes. `POST /ui/safety` performs a local-only safety preview for edited transcripts. `GET /openapi.json` exposes schemas. `/docs` is a self-contained API explorer with no CDN dependency.
+`POST /triage` is the strict organiser-facing response. `POST /ui/triage` calls the same core and wraps it with evidence, caregiver cards and concern metadata. `POST /transcribe` accepts multipart audio and returns an editable transcript. `GET /health` reports configured modes. `POST /ui/safety` performs a local-only safety preview for edited transcripts. `GET /openapi.json` exposes schemas. `/docs` is FastAPI Swagger UI (requires its CDN assets); `/explorer` is the self-contained custom API explorer.
 
 ```bash
 curl http://localhost:8000/triage \
@@ -61,35 +61,35 @@ This returns `emergency_112`, `emergency`, `severe_bleeding`, null follow-up and
 
 The answer is interpreted against the preceding question and immediately escalates. History accepts user `text` or `content`, and the partial assistant shape shown in organiser examples. Question IDs are optional adapter metadata; they never enter the strict scoring response. Previous assistant assertions do not become patient facts.
 
-Invalid inputs return 422; excessive requests 413; unsupported media 415; provider failures 503 with a structured unavailable error. No clinical route is fabricated to hide an outage. Transport-level errors are outside the organiser success schema, an assumption requiring organiser confirmation.
+Invalid inputs return 422; excessive requests 413; unsupported media 415; provider failures on `/triage` and `/transcribe` return 503 with a structured unavailable error. `/ui/triage` visibly falls back to local rules for text-provider errors/deadlines, and ends unresolved or outage cases with human assessment and no routine booking. Transport-level errors are outside the organiser success schema, an assumption requiring organiser confirmation.
 
 
-## Broader intake in version 0.2
+## Broader intake
 
 Stomach pain now receives complaint-specific questions, not the generic service menu. Dedicated pathways cover abdominal pain, headache, vomiting, diarrhoea, cough, sore throat, urinary symptoms, back pain, joint pain, rash, dizziness, injury, eye symptoms, ear pain, dental pain, fatigue and fever. Unfamiliar symptoms use a conservative `other` pathway and human-assessment fallback. This is broad complaint handling, not universal medical competence or diagnosis.
 
-Extraction includes the presenting complaint, actual complaint text, severity, pain location, onset, duration, progression, associated symptoms and evidence-backed clinical findings. Local and live Groq extraction share the expanded schema. An approved question policy chooses a relevant missing item, interprets yes/no in context, supplies answer buttons and stops after enough information or normally four questions. Unknown answers never become negative safety screens.
+Extraction includes the presenting complaint, actual complaint text, severity, pain location, onset, duration, progression, associated symptoms and evidence-backed clinical findings. Local and live Groq extraction share the expanded schema. A prototype question policy chooses a relevant missing item, interprets yes/no in context, supplies answer buttons and stops after enough information or at most four questions for the current patient. Unknown answers never become negative safety screens.
 
 Additional emergency evidence includes sudden severe abdominal pain, abdominal pain on touch, blood in vomit, black sticky stool, sudden extremely painful headache, vision loss, new confusion, airway swelling, inability to swallow saliva and back-pain neurological warning signs. Where no controlled organiser flag fits, the response still uses emergency_112/emergency with an empty controlled flag list and factual reasoning; no invented label is added. The organiser should confirm this documented contract gap. Emergency checks also run on voice transcripts and their edited text.
 
 Unresolved safety questions or prompt in-person assessment needs suppress routine matching/booking. Other symptoms with sufficient context use the available same-day doctor consultation as a coordination pathway, without implying it replaces necessary in-person or specialist care. Explicit procedure requests keep the direct workflow.
 
-The old 46-test count and baseline scores are superseded by the results in `docs/VERIFICATION.md` and `evaluation_all/metrics.json`. The expanded prototype deliberately asks safety questions on some cases that the supplied labels route immediately; higher supplied-label agreement is not claimed. See `docs/BROAD_INTAKE.md` for source-to-rule mappings and known limitations, and `UPGRADE.md` for local replacement steps.
+The old 46-test count and baseline scores are superseded by the results in `docs/VERIFICATION.md` and `evaluation_safety/organiser/metrics.json`. The expanded prototype deliberately asks safety questions on some cases that the supplied labels route immediately; higher supplied-label agreement is not claimed. See `docs/BROAD_INTAKE.md` for source-to-rule mappings and known limitations, and `UPGRADE.md` for local replacement steps.
 
 ## Run checks and evaluation
 
 ```bash
 python -m pytest -q
 node --check frontend/app.js
-python scripts/evaluate.py --split validation --out evaluation
-python scripts/evaluate.py --split all --out evaluation_all
+python scripts/evaluate_safety.py --mode both
+python scripts/evaluate.py --mode rules --split all --out evaluation_safety/organiser
 ```
 
-The suite exercises 18 complaint categories including a conservative `other` fallback, plus all nine controlled emergency pathways, negation/history/hypothetical cases, late emergencies, short replies, corrections, patient isolation, eligibility, API invariants, real FFmpeg decoding/silence rejection, provider failures, separate account headers and mocked transcription. Provider stubs are not live API verification.
+The suite checks configured policies for all 45 named complaint categories and a conservative `other` fallback, plus all nine controlled emergency pathways, negation/history/hypothetical cases, late emergencies, short replies, corrections, patient isolation, eligibility, API invariants, real FFmpeg decoding/silence rejection, provider failures, separate account headers and mocked transcription. Provider stubs are not live API verification.
 
-Measured rules baseline on all 340 provided rows: care macro-F1 **0.8219**, urgency macro-F1 **0.8514**, emergency recall **56/56**, emergency precision **1.0**, schema compliance **1.0**. Matching label-agreement proxies: Hit@1 **0.4689**, Recall@3 **0.5478**, NDCG@3 **0.5077** on 209 rows with nonempty relevance lists; 131 empty lists excluded. No ID/active/role/radius violations in this run. Original red-flag micro recall is **0.3214** because 38 emergency annotations use unsupported flags; proposed semantic corrections yield **1.0**, without applying changes to originals.
+Current checks and measured results are in `docs/VERIFICATION.md`. On all 340 supplied rows the current rules achieve care macro-F1 0.7228 and emergency detection 56/56, with zero false emergencies against those labels. Label agreement is lower than the uploaded baseline (0.7958 care macro-F1), because the policy asks more questions instead of immediately routing some underspecified cases. These descriptive results are not clinical accuracy. Earlier `evaluation/` and `evaluation_all/` outputs are historical; use `evaluation_safety/` for this release.
 
-The scenario-group-disjoint validation subset has 103 rows; care F1 is 0.7701 and urgency F1 is 0.8799. Some organiser labels immediately route cases that this version asks to clarify; the broader intake prioritises obtaining decision-relevant safety information. Do **not** present this as a blind held-out or hidden-test result: baseline rules were authored after inspecting the supplied dataset. No training/retrieval is used. `evaluation/split.json` publishes every grouping and split. Full and grouped confusion matrices, language results and core-only latency are in the metrics files. No official combined score or clinical validation is claimed.
+The organiser grouping script can also generate a 103-row validation subset, but rules were authored after inspecting the supplied data. Grouping alone does not make this a blind evaluation. No training or retrieval is used. Current full matrices are in `evaluation_safety/organiser/metrics.json`.
 
 ## Hidden-test exporter
 

@@ -5,6 +5,7 @@ from dataclasses import dataclass,field
 from types import SimpleNamespace
 from .schemas import Extraction, FlagEvidence,SymptomEvidence
 from .complaints import BROAD_QUESTIONS,enrich,question_candidates,broad_concern,emergency_evidence,has
+from .safety_policy import service_only,question_resolved
 
 QUESTIONS = {
  'need': ('What help is needed: symptoms, home nursing, a lab test, or a doctor consultation?', 'किस मदद की ज़रूरत है: लक्षणों की जाँच, घर पर नर्सिंग, लैब टेस्ट या डॉक्टर से सलाह?'),
@@ -16,47 +17,15 @@ QUESTIONS = {
 }
 QUESTIONS.update({k:(q.en,q.hi) for k,q in BROAD_QUESTIONS.items()})
 
-PATTERNS = {
- 'chest_pain': r'chest\s+(?:pain|tightness)|(?:pain|tightness)\s+(?:in\s+)?(?:my\s+|the\s+)?chest|seene\s*(?:me|mein)?\s*(?:dard|pain)|सीने\s*(?:में)?\s*(?:तेज\s*)?दर्द',
- 'breathlessness': r"(?:can.?t|cannot|unable to)\s+breathe|(?:difficulty|difficulties|trouble)\s+(?:in\s+)?breath(?:ing)?|breath(?:ing)?\s+(?:difficulty|difficulties|problem)|short(?:ness)?\s+of\s+breath|sa+a?ns\s+nahi\s+aa\s+rahi|sa+a?ns\s*(?:ki\s*)?(?:dikkat|takli+f)|सांस\s+नहीं\s+आ\s+रही|साँस\s+नहीं\s+आ\s+रही|(?:सांस|साँस)\s*(?:लेने\s*में|की)?\s*(?:तकलीफ|तकलीफ़|दिक्कत)",
- 'unconsciousness': r'unconscious|unresponsive|not\s+responding|collapsed|response\s+nahi\s+de\s+rahe|बेहोश|जवाब\s+नहीं\s+दे\s+रहे',
- 'severe_bleeding': r"(?:heavy|severe|uncontrolled)\s+bleeding|bleeding\s+(?:that\s+)?(?:won.?t|will not|does not|doesn.?t)\s+stop|bleeding\s+ruk\s+nahi|खून\s+नहीं\s+रुक|बहुत\s+खून",
- 'stroke_symptoms': r'face\s+(?:is\s+)?droop(?:ing)?|slurred\s+speech|sudden\s+(?:one.sided|arm|leg)\s+weakness|chehra\s+tedha|चेहरा\s+टेढ़ा|अचानक\s+एक\s+तरफ\s+कमजोरी',
- 'seizure': r'\bseizure\b|\bconvulsion|daura\s+(?:pad|aa)|दौरा\s+(?:पड़|आ)',
- 'suicidal_ideation': r'(?:want|going|plan|planning)\s+to\s+(?:kill|hurt)\s+myself|end\s+my\s+life|suicidal|khudkushi|आत्महत्या|खुद\s+को\s+मार',
- 'severe_dehydration': r'severe\s+dehydration|severely\s+dehydrated|बहुत\s+ज़्यादा\s+पानी\s+की\s+कमी',
-}
-NEGATIONS = {
- 'chest_pain': r'no\s+(?:current\s+)?chest\s+pain|(?:not having|do not have|don.t have|does not have|doesn.t have)\s+(?:any\s+)?chest\s+pain|den(?:y|ies)\s+chest\s+pain|chest\s+pain\s+nahi|सीने\s*में\s*दर्द\s*नहीं',
- 'breathlessness': r'no\s+(?:difficulty|trouble)\s+breathing|no\s+(?:breathlessness|shortness\s+of\s+breath)|breathing\s+(?:is\s+)?(?:fine|normal)|saans\s+(?:ki\s*)?(?:dikkat|taklif|takleef)\s+nahi|saans\s+lene\s+(?:me|mein)\s+(?:koi\s+)?(?:dikkat|takleef)\s+nahi|(?:सांस|साँस)\s*(?:लेने\s*में|की)?\s*(?:तकलीफ|तकलीफ़|दिक्कत)\s*नहीं',
- 'unconsciousness': r'not\s+unconscious|not\s+unresponsive|बेहोश\s+नहीं',
- 'severe_bleeding': r'no\s+(?:severe|heavy|uncontrolled)\s+bleeding|bleeding\s+(?:has\s+)?stopped|खून\s+रुक\s+गया',
- 'stroke_symptoms': r'no\s+(?:slurred\s+speech|face\s+droop|stroke\s+symptoms)',
- 'seizure': r'no\s+(?:current\s+)?seizure|not\s+having\s+a\s+seizure',
- 'suicidal_ideation': r'not\s+suicidal|no\s+suicidal\s+(?:thoughts|ideation)',
- 'severe_dehydration': r'no\s+severe\s+dehydration|not\s+severely\s+dehydrated',
-}
+# Kept as public aliases for audit tools and older test integrations.
+from .emergency_language import PATTERNS,NEGATIONS,canonical,detect
 
 def normalise(text):
-    return unicodedata.normalize('NFKC',text).casefold().translate(str.maketrans('०१२३४५६७८९','0123456789'))
+    return canonical(text)
 
 def detect_flags(text):
-    text=normalise(text)
-    result={}
-    for clause in re.split(r'[.!?;\n]|\bbut\b|\blekin\b|लेकिन|\band (?:now|later)\b',text):
-        for flag,pattern in PATTERNS.items():
-            neg = re.search(NEGATIONS.get(flag,r'(?!)'),clause)
-            hits=list(re.finditer(pattern,clause))
-            if not hits and not neg: continue
-            historical=bool(re.search(r'\b(?:last year|years? ago|history of|used to|previously)\b|पिछले\s+साल|pehle',clause))
-            hypothetical=bool(re.search(r'\b(?:what if|hypothetical|example|quoted|if someone|if i|if he|if she)\b|अगर|agar',clause))
-            status='hypothetical' if hypothetical else 'historical' if historical else 'denied' if neg else 'affirmed'
-            # Resolved explicit history is not an active symptom. Recent emergencies
-            # are escalated separately when current safety remains unknown.
-            if re.search(r'\b(?:resolved|no longer|gone now)\b',clause): status='historical'
-            if flag not in result or status=='affirmed':
-                result[flag]=FlagEvidence(flag=flag,status=status,quote=clause.strip())
-    return list(result.values())
+    return detect(text)
+
 
 def number_days(text):
     t=normalise(text)
@@ -116,9 +85,12 @@ def extract_local(text,question=None):
     elif re.search(r'\b(?:cbc|lab|sample|collection|test)\b|सीबीसी|टेस्ट|सैंपल|जांच.*खून',t): x.service='lab'
     elif re.search(r'consult|reports?|second opinion|doctor se|डॉक्टर.*(?:सलाह|बात)|रिपोर्ट|ओपिनियन|परामर्श',t): x.service='doctor'
     elif re.search(r'home\s+check|ghar\s+pe\s+check|घर\s*(?:पर|पे)?\s*(?:जांच|जाँच)|weak|कमजोर|fever.*cough|bukhar.*khansi|बुखार.*खांसी|ghar pe dikhana',t): x.service='home_assessment'
-    if question=='breathing':
-        if re.fullmatch(r'(?:yes|haan|han|हाँ|हां|ji)[.! ]*',t):x.flags=[FlagEvidence(flag='breathlessness',status='affirmed',quote=text)]
-        elif re.fullmatch(r'(?:no|nahi|nahin|नहीं|नही)[.! ]*',t):x.flags=[FlagEvidence(flag='breathlessness',status='denied',quote=text)]
+    q=BROAD_QUESTIONS.get(question)
+    target='breathlessness' if question=='breathing' else q.flag if q else None
+    if target:
+        status='affirmed' if re.fullmatch(r'(?:yes|yeah|haan|han|हाँ|हां|ji|जी)[.! ]*',t.strip()) else 'denied' if re.fullmatch(r'(?:no|nope|nahi|nahin|नहीं|नही)[.! ]*',t.strip()) else None
+        if status and target not in {v.flag for v in x.flags}:
+            x.flags.append(FlagEvidence(flag=target,status=status,quote=text))
     return enrich(x,text,question)
 
 @dataclass
@@ -168,7 +140,7 @@ class State:
         elif has(self,'fever_with_complaint','denied') and x.fever is None:self.facts.fever=False
         if x.temperature is not None and x.temperature_unit is None:self.facts.temperature_unit=None
         for f in x.flags:
-            if f.status=='affirmed' or f.flag not in self.flags or correction or self.question=='breathing':
+            if f.status=='affirmed' or f.flag not in self.flags or correction or self.question=='breathing' or self.question in BROAD_QUESTIONS and BROAD_QUESTIONS[self.question].flag==f.flag:
                 self.flags[f.flag]=f
         if any(f.status=='historical' for f in x.flags) and re.search(r'yesterday|earlier today|just now|कल|अभी',normalise(text)):
             self.possible_recent_emergency=True
@@ -219,7 +191,7 @@ def concern(state):
     if expanded:return expanded
     if state.additional_concerns:return state.additional_concerns[-1]
     high=f.temperature is not None and f.temperature_timing!='historical' and ((f.temperature_unit=='F' and f.temperature>=103) or (f.temperature_unit=='C' and f.temperature>=39.4))
-    if f.fever and ((f.duration_days or 0)>=5 or high):
+    if f.fever and ((f.duration_days or 0)>=5 or high or has(state,'high_fever') or has(state,'poor_intake')):
         return 'The prolonged or high fever needs prompt medical assessment. Do not wait for this chat to finish to arrange care.'
     if state.possible_recent_emergency:return 'A recently resolved warning sign still needs prompt medical assessment; do not assume it is safe because it stopped.'
     return None
@@ -229,17 +201,17 @@ def next_question(state):
     if len(state.asked)>=4:return None
     # Explicit procedures bypass unrelated symptom interviews.
     if f.service=='injection_unknown' and 'injection' not in state.asked:return 'injection'
-    if f.service in ('dressing','injection_im','injection_iv','insulin','bp_sugar','lab'):return None
+    if service_only(state):return None
     if f.complaint and f.complaint!='fever':
         candidates=question_candidates(state)
         return candidates[0] if candidates else None
     if f.service=='doctor' and not f.fever:return None
     if f.fever:
-        if concern(state) and 'breathlessness' not in state.flags and 'breathing' not in state.asked:return 'breathing'
+        if concern(state) and not question_resolved(state,'breathing') and 'breathing' not in state.asked:return 'breathing'
         if f.age_months is None and 'age' not in state.asked:return 'age'
-        if 'breathlessness' not in state.flags and 'breathing' not in state.asked:return 'breathing'
-        if 'fever_high' not in state.asked:return 'fever_high'
-        if 'fluids_normal' not in state.asked:return 'fluids_normal'
+        if not question_resolved(state,'breathing') and 'breathing' not in state.asked:return 'breathing'
+        if not question_resolved(state,'fever_high') and 'fever_high' not in state.asked:return 'fever_high'
+        if not question_resolved(state,'fluids_normal') and 'fluids_normal' not in state.asked:return 'fluids_normal'
         if f.duration_days is None and 'duration' not in state.asked:return 'duration'
         if f.service is None and f.temperature is not None and f.temperature_unit is None and 'temperature' not in state.asked:return 'temperature'
         return None

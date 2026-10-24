@@ -1,41 +1,45 @@
-# Verification record - SehatSaathi 0.2
+# Verification — version 0.4
 
-Measured in this session on 24 October 2026. Synthetic data only; this supersedes the 0.1 verification record.
+Measured 24 October 2026 against the user-uploaded team's source. Synthetic data and stub providers only; no clinical validation. This record supersedes the previous 0.2 verification claims.
 
 | Check | Result |
 |---|---|
-| Python suite | 114 passed; one Starlette TestClient deprecation warning, no failures |
-| Complaint coverage checks | 17 named complaint families plus other; English, Hindi and Hinglish examples |
-| Safety tests | Existing nine controlled flags plus extended abdominal, headache, airway, vision, confusion, urinary and back-pain cases; negation, history, hypothetical, late-emergency and correction cases |
-| Conversation tests | Contextual yes/no including reverse polarity, duration corrections, supplied facts skipped, four-question cap, patient changes, associated complaint emergency and duration isolation |
-| Real HTTP / DOM integration | Passed with a real Uvicorn process and jsdom: stomach flow, choices, matching, simulated booking, emergency bypass, Hindi and edited-transcript safety. No DOM runtime errors |
-| JavaScript parsing | node --check frontend/app.js passed |
-| Dependency health | pip check passed; python-dotenv added for automatic non-shell .env loading |
-| Audio checks | Real FFmpeg tone/silence/invalid-media checks and stubbed transcription adapter pass |
-| Account separation | Independent clients and distinct synthetic authentication headers tested; no credential sharing |
-| Provider failures | Rate-limit and malformed-output handling tested; local emergencies bypass broken text provider |
-| Exporter | Re-generated 340 supplied-example rows, IDs preserved; columns provisional; not hidden-test predictions |
-| Live Groq / real microphone | Not tested: user credentials and representative recordings are not available here |
-| Visual browser / microphone QA | Not performed; jsdom checks behaviour, not visual rendering or browser media permissions |
-| Docker | Configuration supplied, execution not tested here |
-| Clinical validation | Not performed; source-backed prototype pathways still need mentor review |
+| Python suite | 222 passed; one Starlette TestClient deprecation warning |
+| New safety development suite | 215/216 checks passed; uploaded baseline 147/216 using identical evaluator |
+| Active warnings in new suite | Update 52/52; baseline 18/52 |
+| False emergencies in 164 negative cases | Update 1; baseline 3 |
+| Unknown-answer conversations | No routine matches; explicit human-assessment result after cap |
+| Ear-pain final step | Successful four-question flow concludes; provider-error, ungrounded-output and deadline stubs conclude with explicit fallback/human assessment |
+| HTTP / DOM | Real Uvicorn + jsdom passed stomach/matching/simulated booking, emergency bypass, Hindi, transcript correction, ear/dizziness final outcomes, network error and retry; no DOM runtime errors |
+| JavaScript | `node --check frontend/app.js` passed |
+| Compatibility | Six-field strict response, 45 named families plus other, specialty roster/matcher, Swagger and custom explorer retained |
+| Live Groq / real microphone | Not run; fake-provider tests do not establish live extraction accuracy |
+| Visual browser / Docker / deployment | Not run here; no deployment or GitHub change performed |
+| Clinical validation | Not performed; finite prototype rules require independent clinical review |
 
-## Actual supplied-data results
+The remaining synthetic failure (`safety-138`) contradicts resolved historical framing with a seizure happening “abhi” (now). It is conservatively treated as emergency. The negative fixture label requires independent adjudication. See `evaluation_safety/README.md`; do not interpret 215/216 as clinical accuracy or a blind test result. The suite was authored before the patch, then used during development. Its variants are not independent clinical samples.
 
-| Metric | All 340 examples | Scenario-group-disjoint 103-row subset |
+## Organiser data, all 340 rows
+
+| Descriptive check | Uploaded baseline | Update |
 |---|---:|---:|
-| Care macro-F1 | 0.8219 | 0.7701 |
-| Urgency macro-F1 | 0.8514 | 0.8799 |
-| Emergency recall | 56/56 | 18/18 |
-| Schema compliance | 1.0 | 1.0 |
-| Matching Hit@1 | 0.4689 | 0.5224 |
-| Matching Recall@3 | 0.5478 | 0.6567 |
-| Matching NDCG@3 | 0.5077 | 0.5956 |
+| Care macro-F1 | 0.7958 | 0.7228 |
+| Labelled emergencies detected | 56/56 | 56/56 |
 
-These are descriptive label-agreement results, not blind hidden-test results. Rules were authored after inspecting the dataset. Broader intake now asks questions on some cases that organiser labels immediately route, reducing agreement versus version 0.1 (care 0.8698, urgency 0.8736). No official score improvement is claimed. All 56 labelled emergencies remain detected. Matching metrics exclude empty relevance lists and inherit noisy-reference limitations; ID/active/role/radius violations are zero in this run.
+Current urgency macro-F1 is 0.7440. Schema compliance is 1.0 for successful assessed responses. Matching proxies on the 209 nonempty-reference rows: Hit@1 0.3445, Recall@3 0.3676, NDCG@3 0.3504; 131 empty-reference rows excluded. No ID/active/role/radius violations occurred. These checks do not establish the correctness of medical triage or all eligibility conditions.
 
-Complete matrices, language results, red-flag noise comparisons and core-only latency measurements are in evaluation_all/metrics.json and evaluation/metrics.json. Provider modes are separated. Independent challenge tests are in tests/test_broad_intake.py and are not training data or clinical validation.
+Agreement with the old labels decreased because this policy asks additional relevant questions rather than immediately matching some underspecified requests. No overall accuracy improvement is claimed. Rules were authored after inspecting supplied templates; this is descriptive label agreement. Complete current outputs are `evaluation_safety/organiser/`; the exact uploaded baseline metrics are `evaluation_safety/organiser_baseline_metrics.json`. Existing `evaluation/` and `evaluation_all/` files are historical and are not this release's current results.
 
-## Still required on the team's laptop
+## Reproduce
 
-Follow UPGRADE.md, retain your private .env, confirm /health version 0.2.0, test both accounts live, check real microphone permissions/cancel/retry, verify mobile visuals and run Docker if used. Record the demo and obtain hidden input/official CSV columns before generating final predictions. Confirm the out-of-vocabulary emergency mapping with organisers. No repository push, public deployment, real booking or dispatch was performed.
+```bash
+python -m pytest -q
+python scripts/evaluate_safety.py --mode both
+python scripts/evaluate.py --mode rules --split all --out evaluation_safety/organiser
+node --check frontend/app.js
+# Optional DOM QA: start a rules-mode server, npm install, then npm run test:ui
+```
+
+Run test/evaluation commands without live keys unless explicitly testing live mode. For the development safety suite, live execution requires `--allow-live` and an explicitly exported text key. Live errors are recorded separately, not silently counted as local success. The UI's separately tested availability fallback is deliberately distinct from this benchmark.
+
+Before the demo, follow `UPGRADE.md`, confirm `/health` version 0.4.0, test real accounts/recordings and both desktop/mobile visuals, and repeat the four-follow-up conclusion flow on the deployment. The package does not contain `.env`, repository history or local dependencies.

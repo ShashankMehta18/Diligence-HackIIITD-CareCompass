@@ -1,4 +1,4 @@
-# CareCompass 0.2 · Team Diligence
+# SehatSaathi 0.2 · Team Diligence
 
 Runnable API-first synthetic care-navigation prototype. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking, dispatch or public deployment.
 

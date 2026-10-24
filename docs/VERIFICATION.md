@@ -1,4 +1,4 @@
-# Verification record - CareCompass 0.2
+# Verification record - SehatSaathi 0.2
 
 Measured in this session on 24 October 2026. Synthetic data only; this supersedes the 0.1 verification record.
 

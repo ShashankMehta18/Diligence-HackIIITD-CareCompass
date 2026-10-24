@@ -4,7 +4,7 @@ import unicodedata
 from dataclasses import dataclass,field
 from types import SimpleNamespace
 from .schemas import Extraction, FlagEvidence,SymptomEvidence
-from .complaints import BROAD_QUESTIONS,enrich,question_candidates,broad_concern,emergency_evidence,has
+from .complaints import BROAD_QUESTIONS,enrich,question_candidates,broad_concern,emergency_evidence,has,question_limit
 
 QUESTIONS = {
  'need': ('What help is needed: symptoms, home nursing, a lab test, or a doctor consultation?', 'किस मदद की ज़रूरत है: लक्षणों की जाँच, घर पर नर्सिंग, लैब टेस्ट या डॉक्टर से सलाह?'),
@@ -146,12 +146,12 @@ class State:
         independent_danger=emergency_evidence(independent)
         independent_concern=broad_concern(independent)
         different=bool(self.facts.complaint and x.complaint and self.facts.complaint!=x.complaint and self.facts.complaint!='other' and not correction)
-        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','pain_location','sudden_onset']:
+        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','body_site','pain_location','sudden_onset']:
             value=getattr(x,key)
             previous=getattr(self.facts,key)
             if key=='complaint' and previous and previous!='other' and value and value!=previous and not correction:
                 continue  # An associated symptom does not silently replace the main complaint.
-            if different and key in ('duration_days','severity','pain_location','sudden_onset','onset'):continue
+            if different and key in ('complaint_text','duration_days','severity','body_site','pain_location','sudden_onset','onset'):continue
             if key in ('age_months','duration_days','temperature') and value is not None and previous is not None and value!=previous and not correction:
                 self.contradictions.append({'field':key,'previous':previous,'latest':value,'turn':index,'status':'latest_user_value_retained_review_needed'})
             if value is not None: setattr(self.facts,key,value)
@@ -226,7 +226,7 @@ def concern(state):
 
 def next_question(state):
     f=state.facts
-    if len(state.asked)>=4:return None
+    if len(state.asked)>=question_limit(state):return None
     # Explicit procedures bypass unrelated symptom interviews.
     if f.service=='injection_unknown' and 'injection' not in state.asked:return 'injection'
     if f.service in ('dressing','injection_im','injection_iv','insulin','bp_sugar','lab'):return None

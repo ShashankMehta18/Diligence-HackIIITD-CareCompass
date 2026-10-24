@@ -22,13 +22,7 @@ async def lifespan(app):
     yield
     await app.state.providers.close()
 
-app = FastAPI(
-    title="CareCompass · Diligence",
-    version="0.2.0",
-    lifespan=lifespan,
-    docs_url="/docs",
-    redoc_url=None,
-)
+app=FastAPI(title='CareCompass · Diligence',version='0.3.0',lifespan=lifespan,docs_url='/docs',redoc_url=None)
 
 class SizeLimit:
     """Bound request bytes before JSON/multipart parsing, including chunked bodies."""
@@ -64,16 +58,14 @@ async def headers(request,call_next):
     response.headers['Referrer-Policy']='no-referrer'
     response.headers['Permissions-Policy']='microphone=(self), geolocation=(self)'
     response.headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'"
-    if request.url.path in ("/docs", "/docs/oauth2-redirect"):
-        response.headers["Content-Security-Policy"] = (
+    if request.url.path in ('/docs','/docs/oauth2-redirect'):
+        response.headers['Content-Security-Policy']=(
             "default-src 'self'; "
             "script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
             "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
             "img-src 'self' data: https://fastapi.tiangolo.com; "
             "connect-src 'self'; frame-ancestors 'none'; base-uri 'self'"
         )
-
-
     return response
 
 @app.exception_handler(ProviderError)
@@ -83,7 +75,7 @@ async def provider_error(request,error):
 @app.get('/health')
 async def health(request:HTTPRequest):
     p=request.app.state.providers
-    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.2.0'}
+    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.3.0'}
 
 @app.post('/triage',response_model=Response)
 async def triage(body:Request,request:HTTPRequest):
@@ -157,7 +149,6 @@ app.mount('/assets',StaticFiles(directory=ROOT/'frontend'),name='assets')
 @app.get('/',include_in_schema=False)
 async def index():return FileResponse(ROOT/'frontend'/'index.html')
 
-@app.get('/explorer', include_in_schema=False)
-async def docs():
-    return FileResponse(ROOT / 'frontend' / 'docs.html')
+@app.get('/explorer',include_in_schema=False)
+async def docs():return FileResponse(ROOT/'frontend'/'docs.html')
 

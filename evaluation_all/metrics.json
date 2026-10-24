@@ -120,8 +120,8 @@
     "tn": 244
   },
   "latency_ms": {
-    "median": 0.19869399989147496,
-    "p95": 0.34568099999887636,
+    "median": 0.21864900008949917,
+    "p95": 0.32678099887561984,
     "scope": "Core processing only; HTTP/network excluded in rules mode; live includes provider round trips"
   },
   "schema_compliance": 1.0,

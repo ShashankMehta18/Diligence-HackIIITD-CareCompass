@@ -69,7 +69,8 @@ class SymptomEvidence(Strict):
     quote: str
 
 Complaint = Literal['abdominal_pain','headache','vomiting','diarrhoea','cough','sore_throat','urinary','back_pain','joint_pain','rash','dizziness','injury','eye_problem','ear_pain','dental_pain','fatigue','fever','other']
-Feature = Literal['abdominal_tenderness','vomiting_blood','black_sticky_stool','blood_in_stool','sudden_worst_headache','new_one_sided_weakness','vision_loss','new_confusion','airway_swelling','cannot_swallow_saliva','bladder_change','saddle_numbness','can_keep_fluids','urine_retention','flank_pain','blood_in_urine','fever_with_complaint','cannot_bear_weight','nonblanching_rash']
+BodySite = Literal['knee','ankle','foot','hip','leg','shoulder','elbow','wrist','hand','arm']
+Feature = Literal['abdominal_tenderness','vomiting_blood','black_sticky_stool','blood_in_stool','sudden_worst_headache','new_one_sided_weakness','vision_loss','new_confusion','airway_swelling','cannot_swallow_saliva','bladder_change','saddle_numbness','can_keep_fluids','urine_retention','flank_pain','blood_in_urine','fever_with_complaint','cannot_bear_weight','nonblanching_rash','recent_injury','joint_swelling','joint_severe_swelling','joint_hot_red','cannot_move_joint','joint_locking','limb_deformity','limb_numbness','ear_discharge','hearing_change','dental_swelling']
 
 class ClinicalFinding(Strict):
     name: Feature
@@ -80,6 +81,7 @@ class Extraction(Strict):
     complaint: Complaint | None = None
     complaint_text: str | None = Field(default=None,max_length=300)
     severity: Literal['mild','moderate','severe'] | None = None
+    body_site: BodySite | None = None
     pain_location: str | None = Field(default=None,max_length=160)
     sudden_onset: bool | None = None
     clinical_features: list[ClinicalFinding] = Field(default_factory=list,max_length=30)

@@ -1,11 +1,11 @@
 import os
 import re
 from .schemas import Response
-from .intake import replay,active_flags,concern,next_question,QUESTIONS,normalise,detect_flags
+from .intake import replay,active_flags,concern,next_question,QUESTIONS,normalise,detect_flags,infer_question
 from .matching import match,IDS,clock
 from .config import MODE,POLICY_VERSION
 from .providers import ProviderError
-from .complaints import emergency_evidence,complete_enough,LABELS,BROAD_QUESTIONS,detect_features,question_candidates
+from .complaints import emergency_evidence,complete_enough,LABELS,BROAD_QUESTIONS,detect_features,question_candidates,YES,NO
 
 def language(req):
     requested=req.language.casefold()
@@ -35,7 +35,7 @@ async def assess(req,providers=None,mode=None,reference_time=None):
             state.facts.complaint_text=extracted.complaint_text or state.facts.complaint_text
         # Preserve locally parsed/corrected facts. Groq fills missing structured
         # facts rather than undoing local evidence or mandatory safety.
-        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','pain_location','sudden_onset']:
+        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','body_site','pain_location','sudden_onset']:
             if getattr(state.facts,key) is None:
                 setattr(state.facts,key,getattr(extracted,key))
         seen={v.name for v in state.facts.associated_symptoms}
@@ -47,6 +47,11 @@ async def assess(req,providers=None,mode=None,reference_time=None):
                 if not any(f.name==v.name and f.status!=v.status for f in local):state.facts.clinical_features.append(v)
         for f in extracted.flags:
             if f.status=='affirmed':
+                # A model must not reinterpret a knee/swelling yes/no as an
+                # answer to an unasked respiratory question.
+                short_answer=re.fullmatch(r'(?:'+YES+'|'+NO+r')[.! ]*',normalise(f.quote).strip())
+                previous=infer_question(req.conversation_history[-1]) if req.conversation_history and req.conversation_history[-1].role=='assistant' else None
+                if short_answer and not (f.flag=='breathlessness' and previous=='breathing'):continue
                 local=detect_flags(f.quote)
                 # A known local negation/historical/hypothetical interpretation
                 # vetoes model affirmation. Unknown wording may be understood by Groq.

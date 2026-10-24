@@ -4,7 +4,7 @@ Use synthetic examples only. Start the app, load separate Groq account keys loca
 
 | Time | Screen / action | Narration |
 |---|---|---|
-| 0:00-0:15 | Opening interface, prototype banner | "SehatSaathi helps families choose a care pathway and understand the next step, in English, Hindi or Hinglish." |
+| 0:00-0:15 | Opening interface, prototype banner | "CareCompass helps families choose a care pathway and understand the next step, in English, Hindi or Hinglish." |
 | 0:15-0:45 | Record: "Mujhe das din se bukhar hai, around 103 Fahrenheit." Stop; inspect editable transcript, correct any number | "A separate Groq audio account transcribes the message. We confirm the transcript because a missed negation or number matters." |
 | 0:45-1:10 | Send; prompt-assessment concern and breathing question. Answer "No"; provide age if asked | "The text account extracts facts. We retain ten days and the temperature instead of asking them again. One relevant question helps decide the next step. This does not diagnose dengue or infer lab values." |
 | 1:10-1:30 | Start again, prescribed wound dressing; show actual caregiver reason | "Procedural requests skip unrelated interviews. Eligibility comes before ranking: role, explicit skill, service radius, availability, then language, proximity and rating." |

@@ -18,6 +18,16 @@ async function until(fn){for(let n=0;n<150;n++){if(fn())return;await pause(25);}
  await submit('two days');assert.match($('chat').textContent,/Where in your abdomen/);
  await submit('lower left');assert.match($('result').textContent,/stomach pain/);
  const book=[...d.querySelectorAll('button')].find(b=>b.textContent==='Simulate booking');assert.ok(book);book.click();assert.match($('booking').textContent,/SIMULATED BOOKING/);
+ $('reset').click();await submit('I have pain in my knee');assert.match($('chat').textContent,/pain in your knee/);
+ answer('Moderate');await until(()=>$('chat').textContent.includes('injury, fall or twist'));
+ answer('No');await until(()=>$('chat').textContent.includes('swelling around your knee'));
+ answer('No');await until(()=>$('chat').textContent.includes('stand and put weight'));
+ answer('Yes');await until(()=>$('chat').textContent.includes('bend, straighten or move your knee'));
+ answer('Yes');await until(()=>$('chat').textContent.includes('How long have you'));
+ await submit('two days');assert.match($('result').textContent,/joint pain/);assert.doesNotMatch($('chat').textContent,/difficulty breathing/);
+ $('reset').click();await submit('My wrist hurts');answer('Mild');await until(()=>$('chat').textContent.includes('injury, fall or twist'));
+ await submit('Now I cannot breathe');await until(()=>$('result').classList.contains('emergency'));
+ assert.equal($('result').querySelector('a').getAttribute('href'),'tel:112');
  $('reset').click();await submit('I have severe stomach pain');assert.match($('concern').textContent,/prompt in-person/);
  answer('Yes');await until(()=>$('result').classList.contains('emergency'));
  assert.equal($('result').querySelector('a').getAttribute('href'),'tel:112');assert.equal($('result').querySelectorAll('button').length,0);assert.equal($('submit').disabled,true);
@@ -27,5 +37,5 @@ async function until(fn){for(let n=0;n<150;n++){if(fn())return;await pause(25);}
  await until(()=>!$('immediate').classList.contains('hidden'));
  $('message').value='No vomiting blood; mild stomach ache';$('message').dispatchEvent(new w.Event('input'));
  await until(()=>$('immediate').classList.contains('hidden'));
- assert.deepEqual(errors,[]);dom.window.close();console.log('PASS: stomach intake, choices, matching, simulated booking, emergency bypass, Hindi, corrected-transcript safety; no DOM runtime errors');
+ assert.deepEqual(errors,[]);dom.window.close();console.log('PASS: stomach and knee intake, contextual choices, matching, simulated booking, late breathing emergency during wrist intake, emergency bypass, Hindi, corrected-transcript safety; no DOM runtime errors');
 })().catch(e=>{console.error(e);process.exit(1);});

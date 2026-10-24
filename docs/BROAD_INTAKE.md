@@ -1,4 +1,4 @@
-# Complaint-aware intake, version 0.2
+# Complaint-aware intake, version 0.3
 
 This version fixes the observed failure where stomach ache received a generic service menu. It broadens extraction and the validated question policy together. It does not diagnose, prescribe or claim universal medical competence.
 
@@ -8,11 +8,13 @@ There are 17 named complaint families plus `other`: abdominal pain, headache, vo
 
 The local recogniser covers finite English, Hindi and Hinglish phrases. Groq increases linguistic breadth when configured, but has not been live-benchmarked here. Neither path recognises every medical condition or phrasing.
 
+Version 0.3 adds localised joint/limb follow-ups, broader pain wording, and ear/dental questions; see FOLLOWUP_UPDATE.md for new source mappings and exact behaviour.
+
 ## State and answer interpretation
 
 The expanded schema carries complaint category and text, reported severity, pain location, sudden onset, duration (including hours), progression, age, temperature/currentness, associated symptoms and clinical findings with status and user evidence. Absence remains unknown. Yes/no answers are linked to the preceding approved question. Reverse-polarity questions such as 'Can you swallow saliva?' and 'Can you keep fluids down?' are handled explicitly. Answer buttons come from backend question metadata.
 
-Question selection skips supplied or answered facts. An unclear answer does not become a negative warning-sign screen. The normal cap remains four follow-up questions, with a conservative human-assessment fallback if critical information is still unknown. Established emergencies stop intake immediately. Prompt-assessment concern is shown alongside any further question rather than withheld until the interview ends.
+Question selection skips supplied or answered facts. An unclear answer does not become a negative warning-sign screen. The normal cap is four follow-up questions (up to six for joint/limb injury paths), with a conservative human-assessment fallback if critical information is still unknown. Established emergencies stop intake immediately. Prompt-assessment concern is shown alongside any further question rather than withheld until the interview ends.
 
 Patient changes reset clinical state. Associated focal symptoms receive their own immediate emergency screen even if the main complaint is different. Their duration/severity is not transferred into the main complaint's scalar fields. This is still a simplified conversation model: it does not maintain a complete independent clinical interview for every simultaneous symptom or every patient. Complex or contradictory stories require human assessment.
 

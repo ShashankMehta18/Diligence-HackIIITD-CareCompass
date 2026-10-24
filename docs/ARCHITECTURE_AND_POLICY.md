@@ -1,6 +1,6 @@
 # Architecture and safety policy
 
-Version carecompass-demo-0.2, 24 October 2026. Synthetic hackathon prototype; not clinician-reviewed or clinically validated.
+Version carecompass-demo-0.3, 25 October 2026. Synthetic hackathon prototype; not clinician-reviewed or clinically validated.
 
 ## Shared flow
 
@@ -10,7 +10,7 @@ Patient messages are untrusted data. They cannot change system policy, supported
 
 ## States and question policy
 
-Facts track patient identity, age in months, fever duration in days, temperature/unit, fever and service intent. Warning signs track affirmed, denied, historical or hypothetical; omission stays unknown. Evidence records preserve user turn references. The approved question bank now covers 17 named complaint families plus other, in addition to service intake; see BROAD_INTAKE.md for the current extraction fields, question plans and expanded safety-source mappings. It is deterministic and complaint-specific; Account A assists understanding, rather than generating unreviewed clinical questions. One question per turn; no repeating answered question IDs; normally at most four follow-ups, then human assessment fallback. Source messages are replayed, so correcting an earlier transcript before submission changes all downstream facts.
+Facts track patient identity, age in months, fever duration in days, temperature/unit, fever and service intent. Warning signs track affirmed, denied, historical or hypothetical; omission stays unknown. Evidence records preserve user turn references. The approved question bank now covers 17 named complaint families plus other, in addition to service intake; see BROAD_INTAKE.md for the current extraction fields, question plans and expanded safety-source mappings. It is deterministic and complaint-specific; Account A assists understanding, rather than generating unreviewed clinical questions. One question per turn; no repeating answered question IDs; normally at most four follow-ups (six for joint/limb injury paths), then human assessment fallback. Source messages are replayed, so correcting an earlier transcript before submission changes all downstream facts.
 
 Local handling covers finite spelling/phrase variants, not universal Hindi/Hinglish. Numeric age/duration and some word forms are supported; the live extractor adds language breadth but has not been benchmarked. Distinct relatives are isolated. Recent resolved warning signs retain assessment concern; older resolved/hypothetical examples do not automatically set active flags. Ambiguous context can be misinterpreted and requires mentor review.
 

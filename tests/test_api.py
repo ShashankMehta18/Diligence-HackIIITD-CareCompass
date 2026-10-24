@@ -25,6 +25,15 @@ def test_audio_no_key_is_honest_and_bad_type():
         assert r.status_code==503 and r.json()['detail']['code']=='audio_not_configured'
         assert c.post('/transcribe',files={'file':('bad.txt',b'bad','text/plain')}).status_code==415
 
+def test_swagger_ui_preserved_and_csp_is_scoped_to_documentation():
+    with TestClient(app) as c:
+        docs=c.get('/docs')
+        assert 'SwaggerUIBundle' in docs.text
+        assert 'cdn.jsdelivr.net' in docs.headers['Content-Security-Policy']
+        assert 'unsafe-inline' not in c.get('/').headers['Content-Security-Policy']
+        assert c.get('/explorer').status_code==200
+        assert c.get('/health').json()['version']=='0.3.0'
+
 def test_request_limit():
     with TestClient(app) as c:
         r=c.post('/triage',content=b'x'*160001,headers={'Content-Type':'application/json'})

@@ -10,23 +10,37 @@ from .schemas import ClinicalFinding,SymptomEvidence
 def norm(s):
     return unicodedata.normalize('NFKC',s).casefold().translate(str.maketrans('०१२३४५६७८९','0123456789'))
 
+BODY_SITES={
+ 'knee':r'\bknees?\b|\bghutn\w*\b|घुटन\w*',
+ 'ankle':r'\bankles?\b|\btakhn\w*\b|टखन\w*',
+ 'foot':r'\b(?:foot|feet)\b|पाँव|पांव',
+ 'hip':r'\bhips?\b|कूल्ह\w*',
+ 'leg':r'\blegs?\b|\bpair\b|पैर',
+ 'shoulder':r'\bshoulders?\b|\bkandh\w*\b|कंध\w*',
+ 'elbow':r'\belbows?\b|कोहनी',
+ 'wrist':r'\bwrists?\b|कलाई',
+ 'hand':r'\bhands?\b|\bhaath?\b|हाथ',
+ 'arm':r'\barms?\b|बाँह|बांह',
+}
+LIMB=r'(?:knees?|ankles?|foot|feet|hips?|legs?|shoulders?|elbows?|wrists?|hands?|arms?|ghutn\w*|pair|घुटन\w*|टखन\w*|पैर|कलाई|कंध\w*|हाथ|जोड़\w*)'
+
 # Order gives focal complaints precedence over accompanying fever/fatigue.
 COMPLAINT_PATTERNS={
  'abdominal_pain':r'(?:stomach|tummy|belly|abdom(?:en|inal))\s*(?:aches?|hurts?|pain|cramp)|(?:pain|ache|cramp).{0,18}(?:stomach|tummy|belly|abdomen)|\b(?:pet|pait)\b.{0,16}(?:dard|pain)|पेट.{0,12}(?:दर्द|ऐंठन)',
  'headache':r'head\s*ache|head\s+pain|(?:sar|sir)\s*(?:me|mein)?\s*dard|सिर.{0,10}दर्द',
  'vomiting':r'\bvomit(?:ing|ed|s)?\b|throw(?:ing)?\s+up|\bulti\b|उल्टी',
  'diarrhoea':r'diarrh(?:oe|e)a|loose\s*(?:motions?|stools?)|watery\s*(?:stools?|poo)|दस्त|पतला\s*पाखाना',
- 'sore_throat':r'sore\s*throat|throat\s*pain|gale?\s*(?:me|mein)?\s*(?:dard|kharash)|गले.{0,12}(?:दर्द|खराश)',
+ 'sore_throat':r'sore\s*throat|throat\s*pain|pain.{0,18}throat|gale?\s*(?:me|mein)?\s*(?:dard|kharash)|गले.{0,12}(?:दर्द|खराश)',
  'cough':r'\bcough(?:ing)?\b|khansi|खांसी|खाँसी',
  'urinary':r'(?:burn(?:s|ing)?|pain|hurt).{0,20}(?:urinat|pee)|(?:urinat|pee).{0,20}(?:burn(?:s|ing)?|pain|hurt)|urinary|peshab.{0,15}(?:jalan|dard)|पेशाब.{0,12}(?:जलन|दर्द|नहीं)',
  'back_pain':r'back\s*(?:ache|pain)|pain.{0,12}back|kamar.{0,12}dard|कमर.{0,12}दर्द|पीठ.{0,12}दर्द',
- 'joint_pain':r'joints?\s*(?:pain|aches?|hurt)|knee\s*pain|jodon.{0,12}dard|जोड़ों.{0,12}दर्द|घुटन.{0,12}दर्द',
+ 'joint_pain':rf'joints?\s*(?:pain|aches?|hurt)|{LIMB}.{{0,25}}(?:pain|aches?|hurts?|dard|दर्द)|(?:pain|ache|hurt|dard|दर्द).{{0,25}}{LIMB}|jodon.{{0,12}}dard|जोड़ों.{{0,12}}दर्द',
  'rash':r'\brash\b|itch(?:y|ing)\s*skin|skin\s*itch|चकत्ते|खुजली',
  'dizziness':r'\bdizz(?:y|iness)\b|light.?headed|chakkar|चक्कर',
- 'eye_problem':r'eye\s*(?:pain|ache|red|problem)|(?:red|painful|sore)\s*eye|vision\s*(?:loss|problem)|आँख.{0,12}(?:दर्द|लाल)|आंख.{0,12}दर्द',
- 'ear_pain':r'ear\s*(?:ache|pain)|kaan.{0,10}dard|कान.{0,12}दर्द',
- 'dental_pain':r'tooth\s*(?:ache|pain)|dental\s*pain|daant.{0,12}dard|दाँत.{0,12}दर्द|दांत.{0,12}दर्द',
- 'injury':r'\binjur(?:y|ed)\b|sprain|twisted\s*(?:ankle|knee)|\bcut\b|चोट|मोच',
+ 'eye_problem':r'eye\s*(?:pain|ache|red|problem)|(?:pain|ache).{0,18}\beyes?\b|(?:red|painful|sore)\s*eye|vision\s*(?:loss|problem)|आँख.{0,12}(?:दर्द|लाल)|आंख.{0,12}दर्द',
+ 'ear_pain':r'ear\s*(?:ache|pain)|(?:pain|ache).{0,18}\bears?\b|kaan.{0,10}dard|कान.{0,12}दर्द',
+ 'dental_pain':r'tooth\s*(?:ache|pain)|(?:pain|ache).{0,18}\b(?:tooth|teeth)\b|dental\s*pain|daant.{0,12}dard|दाँत.{0,12}दर्द|दांत.{0,12}दर्द',
+ 'injury':r'\binjur(?:y|ed)\b|sprain|twisted\s*(?:(?:my|the|his|her|left|right)\s*)*(?:ankle|knee|wrist|foot|arm)|\bcut\b|चोट|मोच',
  'fatigue':r'\bfatigue\b|\bweak(?:ness)?\b|\btired\b|कमजोर|थकान',
  'fever':r'\bfever\b|bukhar|बुखार',
 }
@@ -62,6 +76,9 @@ FEATURE_PATTERNS={
  'fever_with_complaint':r'\bfever\b|bukhar|बुखार',
  'cannot_bear_weight':r'(?:cannot|can.t|unable\s*to)\s*(?:bear\s*weight|stand\s*on|walk\s*on)',
  'nonblanching_rash':r'rash.{0,30}(?:does\s*not|doesn.t)\s*fade|non.?blanching\s*rash',
+ 'ear_discharge':r'(?:fluid|pus|discharge).{0,25}(?:ear)|ear.{0,25}(?:discharge|leaking\s*fluid)|कान.{0,15}(?:पानी|मवाद|बहना)',
+ 'hearing_change':r'(?:lost|loss\s*of|reduced|change\s*in).{0,15}hearing|(?:cannot|can.t|hard\s*to|difficulty).{0,12}hear|सुनाई.{0,10}(?:कम|नहीं)',
+ 'dental_swelling':r'(?:swollen|swelling).{0,20}(?:gum|cheek|jaw)|(?:gum|cheek|jaw).{0,20}(?:swollen|swelling)|(?:मसूड़|गाल|जबड़).{0,15}सूज',
 }
 
 HISTORICAL=r'\b(?:last\s*year|years?\s*ago|history\s*of|used\s*to|resolved|no\s*longer)\b|पिछले\s*साल'
@@ -79,7 +96,7 @@ def status_of(text,hit,name=None):
 
 def detect_features(text):
     result={}
-    for clause in re.split(r'[;!?\n]|\.(?!\d)|\bbut\b|लेकिन|\blekin\b|\band\s+now\b',norm(text)):
+    for clause in re.split(r'[,;!?\n]|\.(?!\d)|\bbut\b|लेकिन|\blekin\b|\band\s+now\b',norm(text)):
         for name,p in FEATURE_PATTERNS.items():
             m=re.search(p,clause)
             if m:
@@ -88,6 +105,45 @@ def detect_features(text):
         # Negative polarity is the information for this positively-worded field.
         if re.search(r'(?:cannot|can.t|unable\s*to)\s*keep\s*(?:water|fluids?|drinks?)\s*down|पानी.{0,10}(?:रुकता\s*नहीं|नहीं\s*रुक)',clause):
             result['can_keep_fluids']=ClinicalFinding(name='can_keep_fluids',status='denied',quote=text)
+    return list(result.values())
+
+def limb_features(text,question=None):
+    """Interpret limb findings only with a limb or a limb-specific question.
+
+    Match the finding word itself so 'knee is not swollen' scopes the denial
+    correctly. Findings about other body regions must not populate this screen.
+    """
+    result={}
+    contextual=question in LIMB_QUESTION_IDS or bool(re.search(LIMB+r'|\bjoint\b',norm(text)))
+    for clause in re.split(r'[,;!?\n]|\.(?!\d)|\bbut\b|लेकिन|\blekin\b',norm(text)):
+        if re.search(r'\b(?:throat|tongue|lips?|ear|eye|cheek|gum|jaw|abdomen)\b|गले|जीभ|कान|आँख|आंख|मसूड़|जबड़',clause) and not re.search(LIMB,clause):continue
+        if not contextual and not re.search(LIMB+r'|\bjoint\b',clause):continue
+        for name,pattern in {
+            'recent_injury':r'\binjur(?:y|ed)\b|\bfall(?:ing|en)?\b|\bfell\b|\btwist(?:ed)?\b|\bsprain\b|\baccident\b|चोट|मोच|गिर(?:ने|ा|ी)|gir\w*|chot',
+            'joint_swelling':r'\b(?:swelling|swollen)\b|\bsujan\b|सूजन|सूज',
+            'joint_severe_swelling':r'\b(?:badly|very|severely|extremely)\s*swollen|\b(?:severe|large)\s*(?:amounts?\s*of\s*)?swelling|बहुत\s*(?:सूजन|सूज)',
+            'joint_hot_red':r'\b(?:hot|warm|red|redness)\b|गर्म|लाल',
+            'cannot_move_joint':r'(?:cannot|can.t|unable\s*to|not\s*able\s*to)\s*(?:bend|straighten|move|use)|(?:मोड़|हिला).{0,12}नहीं|(?:mod|hila).{0,15}nahi',
+            'joint_locking':r'\b(?:locks?|locking|locked)\b|\bgiv(?:es?|ing)\s*way\b|अटक|फँस',
+            'limb_deformity':r'\b(?:deformed|misshapen)\b|changed\s*shape|looks?\s*crooked|टेढ़',
+            'limb_numbness':r'\bnumb(?:ness)?\b|pins\s*and\s*needles|सुन्न',
+            'cannot_bear_weight':r'(?:cannot|can.t|unable\s*to|not\s*able\s*to)\s*(?:walk|stand|bear\s*weight|put\s*(?:any\s*)?weight)|चल.{0,12}नहीं|chal.{0,15}nahi',
+        }.items():
+            m=re.search(pattern,clause)
+            if m:
+                status=status_of(clause,m,name)
+                prefix=clause[:m.start()]
+                if status=='affirmed' and re.search(r'(?:\bno|\bnot)\s+(?:(?:my|the|recent|any|'+LIMB+r'|joint)\s+)*$',prefix):status='denied'
+                if status=='affirmed' and re.search(r'\bno\b[^,;.!?]{0,45}\b(?:or|and)\s*$',prefix):status='denied'
+                result[name]=ClinicalFinding(name=name,status=status,quote=text)
+        # Positive function answers explicitly deny the corresponding inability.
+        for name,pattern in {
+            'cannot_bear_weight':r'\b(?:can|able\s*to)\s*(?:walk|stand|bear\s*weight|put\s*weight)|चल\s*सक|chal\s*sak',
+            'cannot_move_joint':r'\b(?:can|able\s*to)\s*(?:walk\s*and\s*)?(?:bend|straighten|move|use)|मोड़\s*सक|हिला\s*सक|hila\s*sak|mod\s*sak',
+        }.items():
+            m=re.search(pattern,clause)
+            if m and status_of(clause,m)=='affirmed' and name not in result:
+                result[name]=ClinicalFinding(name=name,status='denied',quote=text)
     return list(result.values())
 
 @dataclass(frozen=True)
@@ -123,7 +179,28 @@ BROAD_QUESTIONS={
  'bear_weight':Question('Can you put weight on the injured limb?','क्या चोट वाले हाथ या पैर पर भार डाल पा रहे हैं?',feature='cannot_bear_weight',yes_affirms=False),
  'symptom_detail':Question('What symptom is bothering you most?','कौन सा लक्षण सबसे ज़्यादा परेशान कर रहा है?',field='complaint_text',choices=()),
  'symptom_change':Question('Are the symptoms getting worse, improving, or staying the same?','क्या लक्षण बढ़ रहे हैं, कम हो रहे हैं या वैसे ही हैं?',field='progression',choices=('Getting worse','Improving','Staying the same')),
+ 'joint_site':Question('Which joint or part of the arm or leg is painful?','किस जोड़ या हाथ-पैर के किस हिस्से में दर्द है?',field='body_site',choices=()),
+ 'ear_discharge':Question('Is any fluid or pus coming out of the painful ear?','क्या दर्द वाले कान से पानी या मवाद निकल रहा है?',feature='ear_discharge'),
+ 'hearing_change':Question('Has your hearing changed or become reduced with the ear pain?','क्या कान दर्द के साथ सुनाई देना कम हुआ है या बदला है?',feature='hearing_change'),
+ 'dental_swelling':Question('Is there swelling around the painful tooth, gum, cheek or jaw?','क्या दर्द वाले दाँत, मसूड़े, गाल या जबड़े के आसपास सूजन है?',feature='dental_swelling'),
 }
+
+# Concrete wording doubles as a stable replay key; neither UI nor model needs
+# to invent a question. Upper-limb questions never ask about standing on an arm.
+LIMB_QUESTION_IDS={'joint_site','bear_weight'}
+SITE_LABELS={'knee':('knee','घुटने'),'ankle':('ankle','टखने'),'foot':('foot','पाँव'),'hip':('hip','कूल्हे'),'leg':('leg','पैर'),'shoulder':('shoulder','कंधे'),'elbow':('elbow','कोहनी'),'wrist':('wrist','कलाई'),'hand':('hand','हाथ'),'arm':('arm','बाँह'),'joint':('affected joint','दर्द वाले जोड़')}
+LOWER_LIMB={'knee','ankle','foot','hip','leg'}
+for site,(en,hi) in SITE_LABELS.items():
+    specs={
+        'severity':Question(f'How severe is the pain in your {en}: mild, moderate, or severe?',f'{hi} में दर्द कितना है: हल्का, मध्यम या बहुत तेज़?',field='severity',choices=('Mild','Moderate','Severe')),
+        'injury':Question(f'Did the {en} pain start after an injury, fall or twist?',f'क्या {hi} का दर्द चोट, गिरने या मुड़ने के बाद शुरू हुआ?',feature='recent_injury'),
+        'swelling':Question(f'Is there swelling around your {en}?',f'क्या {hi} के आसपास सूजन है?',feature='joint_swelling'),
+        'hot_red':Question(f'Is the skin around your painful {en} hot or red?',f'क्या दर्द वाले {hi} के आसपास की त्वचा गर्म या लाल है?',feature='joint_hot_red'),
+        'movement':Question(f'Can you bend, straighten or move your {en}?',f'क्या आप {hi} को मोड़, सीधा या हिला पा रहे हैं?',feature='cannot_move_joint',yes_affirms=False),
+        'weight':Question(f'Can you stand and put weight on the leg with the painful {en}?',f'क्या आप दर्द वाले {hi} की तरफ़ के पैर पर खड़े होकर भार डाल पा रहे हैं?',feature='cannot_bear_weight',yes_affirms=False),
+    }
+    for suffix,spec in specs.items():
+        key=f'{site}_{suffix}';BROAD_QUESTIONS[key]=spec;LIMB_QUESTION_IDS.add(key)
 
 YES=r'(?:yes|yeah|haan|han|ji|हाँ|हां|जी)'
 NO=r'(?:no|nope|nahi|nahin|नहीं|नही)'
@@ -142,9 +219,14 @@ def enrich(x,text,question=None):
     if found:x.complaint=found[0];x.complaint_text=text[:300]
     elif not x.service and re.search(r'\b(?:i (?:have|feel)|my .{0,20}(?:hurts|aches)|symptoms?)\b|मुझे|तकलीफ',t) and not re.search(HYPOTHETICAL,t):
         x.complaint='other';x.complaint_text=text[:300]
-    x.clinical_features=detect_features(text)
+    clinical={v.name:v for v in detect_features(text)}
+    clinical.update({v.name:v for v in limb_features(text,question)})
+    x.clinical_features=list(clinical.values())
+    if x.complaint in ('joint_pain','injury') or question in LIMB_QUESTION_IDS:
+        for site,pattern in BODY_SITES.items():
+            if re.search(pattern,t):x.body_site=site;break
     # Severity belongs to an affirmative reported complaint or a severity answer.
-    if found or question in ('symptom_severity','abdominal_severity'):
+    if found or (question in BROAD_QUESTIONS and BROAD_QUESTIONS[question].field=='severity'):
         for value,pattern in [('severe',r'\b(?:severe|unbearable|extreme|worst)\b|बहुत\s*तेज|बहुत\s*गंभीर|असहनीय'),('moderate',r'\bmoderate\b|मध्यम'),('mild',r'\bmild\b|हल्का|हल्के')]:
             m=re.search(pattern,t)
             if m and status_of(t,m)=='affirmed':x.severity=value;break
@@ -167,7 +249,7 @@ def enrich(x,text,question=None):
     q=BROAD_QUESTIONS.get(question)
     if q:
         answer=True if re.fullmatch(YES+r'[.! ]*',t) else False if re.fullmatch(NO+r'[.! ]*',t) else None
-        if q.feature and answer is not None:
+        if q.feature and answer is not None and q.feature not in {v.name for v in x.clinical_features}:
             affirmative=answer==q.yes_affirms
             x.clinical_features=[f for f in x.clinical_features if f.name!=q.feature]+[ClinicalFinding(name=q.feature,status='affirmed' if affirmative else 'denied',quote=text)]
         if q.field=='sudden_onset' and answer is not None:x.sudden_onset=answer
@@ -209,6 +291,15 @@ def broad_concern(state):
     if has(state,'blood_in_stool') or has(state,'blood_in_urine'):return 'Reported blood needs prompt in-person medical assessment.'
     if c=='urinary' and (f.fever or has(state,'flank_pain')):return 'Urinary symptoms with fever or flank pain need prompt in-person medical assessment.'
     if c=='injury' and has(state,'cannot_bear_weight'):return 'An injury that prevents weight bearing needs prompt in-person assessment.'
+    if c in ('joint_pain','injury'):
+        site=SITE_LABELS.get(f.body_site,('joint or injured area',''))[0]
+        if f.severity=='severe':return f'The reported severe {site} pain needs prompt in-person assessment.'
+        if has(state,'cannot_bear_weight'):return f'Being unable to put weight on the painful {site} needs prompt in-person assessment.'
+        if has(state,'joint_severe_swelling'):return f'The reported marked swelling of the {site} needs prompt in-person assessment.'
+        if any(has(state,k) for k in ('cannot_move_joint','joint_locking','limb_deformity','limb_numbness')):return f'The reported movement, shape or sensation problem in the {site} needs prompt in-person assessment.'
+        if has(state,'joint_hot_red') or f.fever is True:return f'A painful {site} with heat, redness or fever needs prompt in-person assessment.'
+    if c=='ear_pain' and (has(state,'ear_discharge') or has(state,'hearing_change')):return 'Ear pain with discharge or changed hearing needs prompt in-person assessment.'
+    if c=='dental_pain' and has(state,'dental_swelling'):return 'Tooth pain with gum, cheek or jaw swelling needs prompt dental assessment.'
     if f.age_months is not None and f.age_months<3 and c and c!='fever':return 'New symptoms in a very young infant need prompt clinician assessment; this prototype cannot establish suitability for home care.'
     return None
 
@@ -228,19 +319,27 @@ def question_candidates(state):
       'sore_throat':['swallow_saliva','associated_fever','symptom_duration','symptom_age'],
       'urinary':['urine_retention','associated_fever','flank_pain','symptom_duration'],
       'back_pain':['bladder_change','saddle_numbness','symptom_severity','symptom_duration'],
-      'joint_pain':['symptom_severity','associated_fever','symptom_duration'],
+      'joint_pain':['joint_site','joint_severity','joint_injury','joint_swelling','joint_movement','symptom_duration'],
       'rash':['airway_swelling','associated_fever','symptom_duration'],
       'dizziness':['one_sided_weakness','symptom_severity','symptom_duration'],
       'injury':['symptom_severity','symptom_duration'],
       'eye_problem':['vision_loss','symptom_severity','symptom_duration'],
-      'ear_pain':['symptom_severity','associated_fever','symptom_duration'],
-      'dental_pain':['airway_swelling','symptom_severity','symptom_duration'],
+      'ear_pain':['ear_discharge','hearing_change','symptom_severity','symptom_duration'],
+      'dental_pain':['airway_swelling','dental_swelling','symptom_severity','symptom_duration'],
       'fatigue':['symptom_severity','symptom_duration','symptom_age'],
       'other':['symptom_detail','symptom_severity','symptom_duration','symptom_change'],
     }
     plan=plans[c]
-    if c=='injury' and re.search(r'ankle|knee|foot|leg|arm|wrist|टखने|पैर|घुटने',norm(f.complaint_text or '')):
-        plan=['symptom_severity','bear_weight','symptom_duration']
+    if c=='joint_pain' or c=='injury' and f.body_site:
+        site=f.body_site or 'joint'
+        # Injury starts with functional safety. Otherwise begin with pain and
+        # mechanism; swelling opens a relevant hot/red screen, never breathing.
+        function=[f'{site}_weight'] if site in LOWER_LIMB else []
+        if c=='injury':
+            plan=['symptom_severity']+(['bear_weight'] if site in LOWER_LIMB else [])+[f'{site}_swelling',f'{site}_movement','symptom_duration']
+        else:
+            plan=(['joint_site'] if not f.body_site else [])+[f'{site}_severity',f'{site}_injury',f'{site}_swelling']+function+[f'{site}_movement','symptom_duration']
+        if has(state,'joint_swelling'):plan=[f'{site}_hot_red']+plan
     if c=='abdominal_pain' and has(state,'vomiting_blood'):return []
     if c=='abdominal_pain' and any(v.name=='vomiting' and v.status=='affirmed' for v in f.associated_symptoms):plan=['blood_vomit']+plan
     result=[]
@@ -256,11 +355,23 @@ def question_candidates(state):
         result.append(q)
     return result
 
+def question_limit(state):
+    # Localised musculoskeletal pain needs mechanism plus function; keep the
+    # original four-question cap for the other complaint families.
+    return 6 if state.facts.complaint in ('joint_pain','injury') else 4
+
 def complete_enough(state):
     """Unresolved answers are not converted into reassuring negative screens."""
     c=state.facts.complaint
     if not c:return False
     critical={'abdominal_pain':['abdominal_tenderness'],'headache':['sudden_worst_headache','new_one_sided_weakness'],'vomiting':['vomiting_blood','can_keep_fluids'],'diarrhoea':['can_keep_fluids','blood_in_stool'],'sore_throat':['cannot_swallow_saliva'],'urinary':['urine_retention'],'back_pain':['bladder_change','saddle_numbness'],'rash':['airway_swelling'],'eye_problem':['vision_loss'],'dental_pain':['airway_swelling']}.get(c,[])
     known=features(state)
+    if c in ('joint_pain','injury'):
+        if c=='joint_pain' and not state.facts.body_site:return False
+        critical+=['cannot_move_joint']
+        if state.facts.body_site in LOWER_LIMB:critical+=['cannot_bear_weight']
+        if has(state,'joint_swelling'):critical+=['joint_hot_red']
+    if c=='ear_pain':critical+=['ear_discharge','hearing_change']
+    if c=='dental_pain':critical+=['dental_swelling']
     if c=='cough' and 'breathlessness' not in state.flags:return False
     return c!='other' and all(k in known and known[k].status in ('affirmed','denied') for k in critical)

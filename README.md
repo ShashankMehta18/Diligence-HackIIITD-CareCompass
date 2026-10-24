@@ -1,4 +1,4 @@
-# SehatSaathi · Team Diligence
+# CareCompass 0.3 · Team Diligence
 
 Runnable API-first synthetic care-navigation prototype. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking, dispatch or public deployment.
 
@@ -37,7 +37,7 @@ The backend automatically loads `.env`; you do not need `source .env`. Existing 
 
 ## API
 
-`POST /triage` is the strict organiser-facing response. `POST /ui/triage` calls the same core and wraps it with evidence, caregiver cards and concern metadata. `POST /transcribe` accepts multipart audio and returns an editable transcript. `GET /health` reports configured modes. `POST /ui/safety` performs a local-only safety preview for edited transcripts. `GET /openapi.json` exposes schemas. `/docs` is a self-contained API explorer with no CDN dependency.
+`POST /triage` is the strict organiser-facing response. `POST /ui/triage` calls the same core and wraps it with evidence, caregiver cards and concern metadata. `POST /transcribe` accepts multipart audio and returns an editable transcript. `GET /health` reports configured modes. `POST /ui/safety` performs a local-only safety preview for edited transcripts. `GET /openapi.json` exposes schemas. `/docs` provides Swagger UI (internet required for CDN assets); `/explorer` retains the self-contained API explorer.
 
 ```bash
 curl http://localhost:8000/triage \
@@ -68,7 +68,7 @@ Invalid inputs return 422; excessive requests 413; unsupported media 415; provid
 
 Stomach pain now receives complaint-specific questions, not the generic service menu. Dedicated pathways cover abdominal pain, headache, vomiting, diarrhoea, cough, sore throat, urinary symptoms, back pain, joint pain, rash, dizziness, injury, eye symptoms, ear pain, dental pain, fatigue and fever. Unfamiliar symptoms use a conservative `other` pathway and human-assessment fallback. This is broad complaint handling, not universal medical competence or diagnosis.
 
-Extraction includes the presenting complaint, actual complaint text, severity, pain location, onset, duration, progression, associated symptoms and evidence-backed clinical findings. Local and live Groq extraction share the expanded schema. An approved question policy chooses a relevant missing item, interprets yes/no in context, supplies answer buttons and stops after enough information or normally four questions. Unknown answers never become negative safety screens.
+Extraction includes the presenting complaint, actual complaint text, severity, pain location, onset, duration, progression, associated symptoms and evidence-backed clinical findings. Local and live Groq extraction share the expanded schema. An approved question policy chooses a relevant missing item, interprets yes/no in context, supplies answer buttons and stops after enough information or normally four questions (up to six for joint/limb injury pathways). Unknown answers never become negative safety screens.
 
 Additional emergency evidence includes sudden severe abdominal pain, abdominal pain on touch, blood in vomit, black sticky stool, sudden extremely painful headache, vision loss, new confusion, airway swelling, inability to swallow saliva and back-pain neurological warning signs. Where no controlled organiser flag fits, the response still uses emergency_112/emergency with an empty controlled flag list and factual reasoning; no invented label is added. The organiser should confirm this documented contract gap. Emergency checks also run on voice transcripts and their edited text.
 
@@ -141,3 +141,9 @@ Attribution: Sanocare synthetic care-triage dataset v1 (2026), provided for the 
 
 The frontend deliberately uses native HTML/CSS/JavaScript rather than React: this removes a build/dependency layer while providing the required complete flow. The API/core separation permits replacing it with React later without changing scoring behaviour.
 
+
+## Follow-up relevance update (0.3)
+
+See [docs/FOLLOWUP_UPDATE.md](docs/FOLLOWUP_UPDATE.md). Knee and other limb pain now retain the affected body site and select injury, swelling, movement and weight-bearing questions. Supplied facts are skipped; swelling branches to local heat/redness checks. Wrist/shoulder questions do not ask about standing. Ear and dental pain have additional local symptom questions. Breathing questions remain in respiratory/fever pathways; reported emergency symptoms still interrupt any complaint.
+
+There is no claim of coverage for every disease. The strict organiser response is unchanged. Source-backed prototype pathways, finite synthetic tests, and human assessment fallback do not establish clinical validation. Swagger UI remains available at `/docs`.

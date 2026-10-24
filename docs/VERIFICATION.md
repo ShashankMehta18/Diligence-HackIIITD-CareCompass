@@ -1,14 +1,16 @@
-# Verification record - SehatSaathi 0.2
+# Verification record - CareCompass 0.3
 
-Measured in this session on 24 October 2026. Synthetic data only; this supersedes the 0.1 verification record.
+Measured on 25 October 2026. Synthetic data only; this supersedes the 0.2 verification record.
 
 | Check | Result |
 |---|---|
-| Python suite | 114 passed; one Starlette TestClient deprecation warning, no failures |
+| Python suite | 179 passed; one Starlette TestClient deprecation warning, no failures |
 | Complaint coverage checks | 17 named complaint families plus other; English, Hindi and Hinglish examples |
 | Safety tests | Existing nine controlled flags plus extended abdominal, headache, airway, vision, confusion, urinary and back-pain cases; negation, history, hypothetical, late-emergency and correction cases |
-| Conversation tests | Contextual yes/no including reverse polarity, duration corrections, supplied facts skipped, four-question cap, patient changes, associated complaint emergency and duration isolation |
-| Real HTTP / DOM integration | Passed with a real Uvicorn process and jsdom: stomach flow, choices, matching, simulated booking, emergency bypass, Hindi and edited-transcript safety. No DOM runtime errors |
+| Conversation tests | Contextual yes/no including reverse polarity, duration corrections, supplied facts skipped, four-question general/six-question limb cap, body-site retention, patient changes, associated complaint emergency and duration isolation |
+| Real HTTP / DOM integration | Passed with a real Uvicorn process and jsdom: stomach and knee flows, contextual choices, matching, simulated booking, emergency bypass, late breathing emergency during wrist intake, Hindi and edited-transcript safety. No DOM runtime errors |
+| Follow-up relevance | Full knee conversation, swelling branch, upper-limb wording, supplied facts skipped, reverse-polarity function answers, unclear-answer fallback, model short-answer guard, Hindi/Hinglish and nonrespiratory pathway checks pass |
+| Swagger UI | Server HTML/OpenAPI and docs-only CSP checks pass; custom explorer preserved. Actual browser CDN rendering not tested |
 | JavaScript parsing | node --check frontend/app.js passed |
 | Dependency health | pip check passed; python-dotenv added for automatic non-shell .env loading |
 | Audio checks | Real FFmpeg tone/silence/invalid-media checks and stubbed transcription adapter pass |
@@ -38,4 +40,4 @@ Complete matrices, language results, red-flag noise comparisons and core-only la
 
 ## Still required on the team's laptop
 
-Follow UPGRADE.md, retain your private .env, confirm /health version 0.2.0, test both accounts live, check real microphone permissions/cancel/retry, verify mobile visuals and run Docker if used. Record the demo and obtain hidden input/official CSV columns before generating final predictions. Confirm the out-of-vocabulary emergency mapping with organisers. No repository push, public deployment, real booking or dispatch was performed.
+Follow UPGRADE.md, retain your private .env, confirm /health version 0.3.0, test both accounts live, check real microphone permissions/cancel/retry, verify mobile visuals and run Docker if used. Record the demo and obtain hidden input/official CSV columns before generating final predictions. Confirm the out-of-vocabulary emergency mapping with organisers. No repository push, public deployment, real booking or dispatch was performed.

@@ -1,4 +1,4 @@
-# SehatSaathi 0.5 · Team Diligence
+# SehatSaathi · Team Diligence
 
 Runnable API-first synthetic care-navigation prototype. Version 0.5 repairs the deployed audit findings with complaint-independent safety intents, contextual extraction, explicit uncertainty handling, provider diagnostics/cooldowns and expanded regression checks. See `UPGRADE.md` before updating an existing Git clone. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking or dispatch.
 

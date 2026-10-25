@@ -1,0 +1,927 @@
+[
+  {
+    "normalised_text": "accident ke baad bleeding ruk nahi rahi",
+    "count": 13,
+    "ids": [
+      "S0004",
+      "S0015",
+      "S0047",
+      "S0085",
+      "S0091",
+      "S0120",
+      "S0141",
+      "S0201",
+      "S0212",
+      "S0243",
+      "S0253",
+      "S0254",
+      "S0278"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "bacche ki medicine pe second opinion chahiye",
+    "count": 4,
+    "ids": [
+      "S0086",
+      "S0114",
+      "S0252",
+      "S0298"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "book a full body checkup, home collection",
+    "count": 6,
+    "ids": [
+      "S0012",
+      "S0116",
+      "S0139",
+      "S0215",
+      "S0271",
+      "S0281"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "cbc aur thyroid test ghar se sample lekar",
+    "count": 8,
+    "ids": [
+      "S0021",
+      "S0052",
+      "S0130",
+      "S0137",
+      "S0233",
+      "S0240",
+      "S0320",
+      "S0321"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "dadaji weak hain, ghar pe checkup chahiye",
+    "count": 4,
+    "ids": [
+      "S0176",
+      "S0183",
+      "S0211",
+      "S0229"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "dadi ko bedsore dressing chahiye",
+    "count": 5,
+    "ids": [
+      "S0124",
+      "S0170",
+      "S0200",
+      "S0227",
+      "S0295"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "doctor chahiye",
+    "count": 6,
+    "ids": [
+      "S0024",
+      "S0084",
+      "S0187",
+      "S0190",
+      "S0222",
+      "S0331"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "doctor ne injection likha hai koi ghar aa sakta hai",
+    "count": 6,
+    "ids": [
+      "S0010",
+      "S0013",
+      "S0028",
+      "S0046",
+      "S0194",
+      "S0312"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "doctor prescribed an injection, can someone come home",
+    "count": 8,
+    "ids": [
+      "S0001",
+      "S0071",
+      "S0133",
+      "S0159",
+      "S0188",
+      "S0193",
+      "S0213",
+      "S0329"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "full body checkup home collection",
+    "count": 5,
+    "ids": [
+      "S0209",
+      "S0223",
+      "S0299",
+      "S0305",
+      "S0322"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "ghar pe im injection lagwana hai",
+    "count": 10,
+    "ids": [
+      "S0039",
+      "S0070",
+      "S0074",
+      "S0140",
+      "S0199",
+      "S0218",
+      "S0220",
+      "S0237",
+      "S0311",
+      "S0316"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "grandfather is weak and not eating, want a home check-up",
+    "count": 5,
+    "ids": [
+      "S0042",
+      "S0165",
+      "S0208",
+      "S0301",
+      "S0330"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "grandmother has a bedsore that needs dressing",
+    "count": 3,
+    "ids": [
+      "S0003",
+      "S0005",
+      "S0189"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "he suddenly collapsed and is not responding",
+    "count": 5,
+    "ids": [
+      "S0090",
+      "S0173",
+      "S0236",
+      "S0255",
+      "S0269"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "heavy bleeding that won't stop after an accident",
+    "count": 4,
+    "ids": [
+      "S0032",
+      "S0157",
+      "S0207",
+      "S0251"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "hello koi hai?",
+    "count": 2,
+    "ids": [
+      "S0267",
+      "S0277"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "help chahiye",
+    "count": 5,
+    "ids": [
+      "S0044",
+      "S0107",
+      "S0197",
+      "S0242",
+      "S0282"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "hi, is anyone there?",
+    "count": 6,
+    "ids": [
+      "S0059",
+      "S0093",
+      "S0175",
+      "S0180",
+      "S0304",
+      "S0326"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "i need help",
+    "count": 3,
+    "ids": [
+      "S0045",
+      "S0076",
+      "S0082"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "i want to book something for my mother",
+    "count": 7,
+    "ids": [
+      "S0014",
+      "S0057",
+      "S0178",
+      "S0239",
+      "S0274",
+      "S0317",
+      "S0335"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "insulin injection help needed for elderly father",
+    "count": 9,
+    "ids": [
+      "S0007",
+      "S0031",
+      "S0033",
+      "S0036",
+      "S0168",
+      "S0177",
+      "S0179",
+      "S0231",
+      "S0290"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "kal subah sugar test ghar pe",
+    "count": 7,
+    "ids": [
+      "S0043",
+      "S0073",
+      "S0109",
+      "S0123",
+      "S0156",
+      "S0205",
+      "S0315"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "mild acidity and gas since morning, want to consult a doctor",
+    "count": 9,
+    "ids": [
+      "S0002",
+      "S0054",
+      "S0078",
+      "S0087",
+      "S0161",
+      "S0261",
+      "S0279",
+      "S0285",
+      "S0332"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "mummy ka bp sugar ghar pe check karwana hai",
+    "count": 6,
+    "ids": [
+      "S0011",
+      "S0102",
+      "S0110",
+      "S0186",
+      "S0204",
+      "S0287"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "mummy ke liye kuch book karna hai",
+    "count": 1,
+    "ids": [
+      "S0152"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "my father has had fever and cough for 2 days",
+    "count": 8,
+    "ids": [
+      "S0025",
+      "S0026",
+      "S0103",
+      "S0150",
+      "S0224",
+      "S0308",
+      "S0327",
+      "S0336"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "my father is having severe chest pain and can't breathe",
+    "count": 4,
+    "ids": [
+      "S0088",
+      "S0225",
+      "S0284",
+      "S0340"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "need a second opinion on my child's prescription",
+    "count": 10,
+    "ids": [
+      "S0050",
+      "S0055",
+      "S0095",
+      "S0128",
+      "S0138",
+      "S0160",
+      "S0235",
+      "S0241",
+      "S0245",
+      "S0309"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "need an im injection given at home",
+    "count": 5,
+    "ids": [
+      "S0063",
+      "S0080",
+      "S0108",
+      "S0182",
+      "S0265"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "need blood sugar test at home tomorrow morning",
+    "count": 5,
+    "ids": [
+      "S0040",
+      "S0066",
+      "S0079",
+      "S0081",
+      "S0083"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "need someone to check bp and sugar at home for my mother",
+    "count": 5,
+    "ids": [
+      "S0069",
+      "S0147",
+      "S0203",
+      "S0259",
+      "S0264"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "need wound dressing at home after surgery",
+    "count": 4,
+    "ids": [
+      "S0020",
+      "S0077",
+      "S0163",
+      "S0206"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "operation ke baad ghar pe dressing karani hai",
+    "count": 11,
+    "ids": [
+      "S0048",
+      "S0058",
+      "S0126",
+      "S0181",
+      "S0216",
+      "S0219",
+      "S0234",
+      "S0246",
+      "S0248",
+      "S0262",
+      "S0303"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "papa ko do din se bukhar hai aur khansi bhi",
+    "count": 4,
+    "ids": [
+      "S0056",
+      "S0097",
+      "S0210",
+      "S0226"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "papa ko insulin injection chahiye ghar pe",
+    "count": 4,
+    "ids": [
+      "S0022",
+      "S0198",
+      "S0268",
+      "S0318"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "papa ko severe chest pain hai saans nahi aa rahi",
+    "count": 5,
+    "ids": [
+      "S0075",
+      "S0167",
+      "S0192",
+      "S0214",
+      "S0306"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "post-operative dressing change required for my wife",
+    "count": 7,
+    "ids": [
+      "S0122",
+      "S0191",
+      "S0202",
+      "S0247",
+      "S0276",
+      "S0325",
+      "S0334"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "reports ke baare me doctor se baat karni hai",
+    "count": 3,
+    "ids": [
+      "S0053",
+      "S0294",
+      "S0323"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "subah se acidity gas hai, doctor se consult karna hai",
+    "count": 1,
+    "ids": [
+      "S0023"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "want a cbc and thyroid test with home sample collection",
+    "count": 5,
+    "ids": [
+      "S0017",
+      "S0155",
+      "S0228",
+      "S0238",
+      "S0286"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "want to talk to a doctor about my reports",
+    "count": 9,
+    "ids": [
+      "S0027",
+      "S0034",
+      "S0049",
+      "S0051",
+      "S0062",
+      "S0067",
+      "S0096",
+      "S0135",
+      "S0300"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "wife ki post-op dressing change karwani hai",
+    "count": 2,
+    "ids": [
+      "S0072",
+      "S0314"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "wo achanak gir gaye response nahi de rahe",
+    "count": 4,
+    "ids": [
+      "S0008",
+      "S0221",
+      "S0296",
+      "S0313"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "एक्सीडेंट के बाद खून नहीं रुक रहा",
+    "count": 3,
+    "ids": [
+      "S0127",
+      "S0270",
+      "S0337"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "ऑपरेशन के बाद घर पर ड्रेसिंग करवानी है",
+    "count": 5,
+    "ids": [
+      "S0136",
+      "S0154",
+      "S0174",
+      "S0333",
+      "S0339"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "कल सुबह शुगर टेस्ट घर पर",
+    "count": 5,
+    "ids": [
+      "S0029",
+      "S0041",
+      "S0142",
+      "S0272",
+      "S0338"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "घर पर इंजेक्शन लगवाना है",
+    "count": 8,
+    "ids": [
+      "S0009",
+      "S0037",
+      "S0100",
+      "S0112",
+      "S0119",
+      "S0166",
+      "S0195",
+      "S0280"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "डॉक्टर चाहिए",
+    "count": 4,
+    "ids": [
+      "S0064",
+      "S0151",
+      "S0257",
+      "S0328"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "डॉक्टर ने इंजेक्शन लिखा है, घर कोई आ सकता है",
+    "count": 7,
+    "ids": [
+      "S0105",
+      "S0113",
+      "S0144",
+      "S0148",
+      "S0149",
+      "S0288",
+      "S0289"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "दादाजी कमजोर हैं, घर पर जांच चाहिए",
+    "count": 2,
+    "ids": [
+      "S0164",
+      "S0292"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "दादी को घाव की ड्रेसिंग चाहिए",
+    "count": 1,
+    "ids": [
+      "S0038"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "नमस्ते, कोई है?",
+    "count": 1,
+    "ids": [
+      "S0244"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "पत्नी की पट्टी बदलवानी है घर पर",
+    "count": 6,
+    "ids": [
+      "S0060",
+      "S0104",
+      "S0230",
+      "S0266",
+      "S0273",
+      "S0302"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "पापा को इंसुलिन लगवाना है",
+    "count": 2,
+    "ids": [
+      "S0030",
+      "S0324"
+    ],
+    "route_urgency_pairs": [
+      "('home_nursing', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "पापा को तेज सीने में दर्द है और सांस नहीं आ रही",
+    "count": 9,
+    "ids": [
+      "S0016",
+      "S0065",
+      "S0094",
+      "S0131",
+      "S0132",
+      "S0134",
+      "S0146",
+      "S0258",
+      "S0291"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "पापा को दो दिन से बुखार और खांसी है",
+    "count": 5,
+    "ids": [
+      "S0117",
+      "S0162",
+      "S0250",
+      "S0256",
+      "S0297"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "फुल बॉडी चेकअप घर से सैंपल",
+    "count": 7,
+    "ids": [
+      "S0035",
+      "S0061",
+      "S0121",
+      "S0153",
+      "S0171",
+      "S0185",
+      "S0307"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "बच्चे की दवा पर सेकंड ओपिनियन चाहिए",
+    "count": 5,
+    "ids": [
+      "S0068",
+      "S0101",
+      "S0129",
+      "S0172",
+      "S0232"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "मदद चाहिए",
+    "count": 3,
+    "ids": [
+      "S0018",
+      "S0125",
+      "S0217"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "माँ का बीपी और शुगर घर पर चेक करवाना है",
+    "count": 4,
+    "ids": [
+      "S0089",
+      "S0099",
+      "S0143",
+      "S0158"
+    ],
+    "route_urgency_pairs": [
+      "('paramedic_home_visit', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "माँ के लिए कुछ बुक करना है",
+    "count": 1,
+    "ids": [
+      "S0019"
+    ],
+    "route_urgency_pairs": [
+      "(None, None)"
+    ]
+  },
+  {
+    "normalised_text": "रिपोर्ट के बारे में डॉक्टर से बात करनी है",
+    "count": 3,
+    "ids": [
+      "S0145",
+      "S0169",
+      "S0260"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  },
+  {
+    "normalised_text": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "count": 9,
+    "ids": [
+      "S0092",
+      "S0106",
+      "S0111",
+      "S0118",
+      "S0196",
+      "S0249",
+      "S0275",
+      "S0283",
+      "S0310"
+    ],
+    "route_urgency_pairs": [
+      "('emergency_112', 'emergency')"
+    ]
+  },
+  {
+    "normalised_text": "सीबीसी और थायराइड टेस्ट घर से सैंपल लेकर",
+    "count": 3,
+    "ids": [
+      "S0098",
+      "S0293",
+      "S0319"
+    ],
+    "route_urgency_pairs": [
+      "('lab_test_home', 'scheduled')"
+    ]
+  },
+  {
+    "normalised_text": "सुबह से एसिडिटी है, डॉक्टर से सलाह चाहिए",
+    "count": 4,
+    "ids": [
+      "S0006",
+      "S0115",
+      "S0184",
+      "S0263"
+    ],
+    "route_urgency_pairs": [
+      "('teleconsultation', 'same_day')"
+    ]
+  }
+]

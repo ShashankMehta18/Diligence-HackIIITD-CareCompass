@@ -1,0 +1,63 @@
+{
+  "counts": {
+    "triage": 340,
+    "flat": 340,
+    "roster": 60,
+    "multi": 2,
+    "unique_literal_inputs": 66,
+    "unique_normalised_inputs": 65,
+    "unique_reasoning": 6,
+    "nonempty_histories": 0,
+    "nonemergency_empty": 36,
+    "response_invariant_violations": 0,
+    "recommendation_entries": 357,
+    "english_input_staff_without_english": 125,
+    "missing_explicit_skill": 16
+  },
+  "care_type": {
+    "home_nursing": 103,
+    "teleconsultation": 48,
+    "emergency_112": 56,
+    "paramedic_home_visit": 43,
+    "lab_test_home": 51,
+    "None": 39
+  },
+  "urgency": {
+    "same_day": 194,
+    "emergency": 56,
+    "scheduled": 51,
+    "None": 39
+  },
+  "language": {
+    "English": 130,
+    "Hinglish": 113,
+    "Hindi": 97
+  },
+  "flags": {
+    "chest_pain": 56,
+    "breathlessness": 56
+  },
+  "roles": {
+    "doctor": 18,
+    "medic": 28,
+    "phlebotomist": 14
+  },
+  "active": {
+    "True": 52,
+    "False": 8
+  },
+  "proposed_flag_correction_rows": 38,
+  "skill_issue_rows": 12,
+  "sha256": {
+    "triage": "51a157aa94d9d7715d3422675229be09f4bc772adeb77fb28b469cfa7269a3e0",
+    "flat": "1a567311c73aa1e181b5dde8ddcc1cd32e5e44ae14718170c71eaeacf8004dfc",
+    "roster": "b38b6b81e41fe7816b1de2f1ab772e6573963cd9fdcb3418b0b9c3341b5b88ea",
+    "multi": "634a146457744f0d7f66f640bb95b73af1fda57b3d91d48a6c7f309386ae48c9"
+  },
+  "limitations": [
+    "No clinical validation",
+    "No live model or STT tests",
+    "No availability violations asserted without reference clock",
+    "Exact text grouping alone does not prevent semantic/cross-language leakage"
+  ]
+}

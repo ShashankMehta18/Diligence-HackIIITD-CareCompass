@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5faf7">
+  <meta name="description" content="SehatSaathi is a synthetic hackathon care-navigation prototype that helps you understand next steps. Not a medical diagnosis or booking service.">
+  <title>SehatSaathi · Diligence</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+  <script src="/assets/presentation.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#message">Skip to your message</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="SehatSaathi by Diligence, home">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span class="brand-copy">sehat <strong>saathi</strong><small>YOUR CARE COMPANION</small></span>
+      </a>
+      <div class="header-actions">
+        <button id="howBtn" class="plain" type="button">How it works</button>
+        <a class="urgent" href="tel:112">Emergency? Call 112 ↗</a>
+        <button id="theme" class="theme" type="button" aria-label="Switch color theme" aria-pressed="false">◐</button>
+        <div class="language">
+          <label for="language">Language / भाषा</label>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="auto">Hinglish / Auto</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="page-shell">
+    <div class="eyebrow"><span class="live-dot"></span> A CLEARER PATH TO CARE</div>
+    <section class="intro" aria-label="SehatSaathi introduction">
+      <div class="intro-copy">
+        <span class="eyebrow hidden" id="eyebrow"><span class="eyebrow-mark" aria-hidden="true"></span>A CLEARER NEXT STEP</span>
+        <h1 id="heading">A little clarity.<br><em>Better care.</em></h1>
+        <p id="subtitle">Tell us what’s troubling you. We’ll ask a few thoughtful questions and help you find the right kind of care.</p>
+        <div class="intro-trust hidden" aria-hidden="true">
+          <span><span class="trust-symbol">✓</span> Simple questions</span>
+          <span><span class="trust-symbol">✓</span> Clear next steps</span>
+          <span><span class="trust-symbol">✓</span> Safety-first guidance</span>
+        </div>
+      </div>
+      <div class="intro-note" aria-hidden="true"><span class="note-symbol">✳</span><p>For you.<br>For the people<br><strong>you care about.</strong></p></div>
+    </section>
+    <div class="scope hidden" aria-hidden="true">
+      <span class="scope-info"><span class="dot" aria-hidden="true"></span><span id="scope">Synthetic hackathon prototype · Care navigation, not diagnosis</span></span>
+      <span id="mode" class="badge">Checking connection…</span>
+    </div>
+    <section id="immediate" class="warning hidden" role="alert">
+      <strong>Possible emergency in the transcript / रिकॉर्डिंग में खतरे का संकेत</strong>
+      <p>Call 112 now if this is happening. Do not delay care while editing. Speech recognition can make mistakes; check the transcript. No help has been dispatched.</p>
+      <a href="tel:112" class="call">Call 112 / 112 पर कॉल करें</a>
+    </section>
+    <div class="workspace">
+      <aside class="journey" aria-label="Your care journey">
+        <div class="sidebar-label">YOUR CARE JOURNEY</div>
+        <ol class="steps">
+          <li id="step1" class="active" aria-current="step"><span>01</span><div>Tell us what’s wrong<small>In your own words</small></div></li>
+          <li id="step2"><span>02</span><div>A few useful questions<small>Specific to your symptoms</small></div></li>
+          <li id="step3"><span>03</span><div>Find the right care<small>A clear next step</small></div></li>
+        </ol>
+        <div class="side-note"><span aria-hidden="true">♡</span><h3>Care begins with listening.</h3><p>English, Hindi, or a little of both. Type or use your voice.</p></div>
+        <div class="prototype">HACKATHON PROTOTYPE<p>Care navigation, not a diagnosis. Profiles and bookings are synthetic.</p></div>
+      </aside>
+      <div class="care-content">
+      <section class="panel chat-panel" aria-label="Care conversation">
+        <div class="panel-top"><span id="stageLabel">LET’S START WITH YOU</span><span>English · Hindi · Hinglish</span></div>
+        <div class="panel-title">
+          <div>
+            <h2 id="conversationTitle">Describe the need</h2>
+            <span id="progress" class="progress-pill hidden" aria-live="polite"></span>
+          </div>
+          <button id="reset" class="text-button" type="button">Start again</button>
+        </div>
+        <div id="chat" aria-live="polite" aria-relevant="additions"></div>
+        <div id="concern" class="concern hidden" role="alert"></div>
+        <div id="answers" class="answers"></div>
+        <form id="intake">
+          <label for="message" id="messageLabel">Your message</label>
+          <textarea id="message" rows="3" maxlength="6000" placeholder="e.g. papa ko do din se bukhar hai aur khansi bhi" required></textarea>
+          <div id="transcriptTools" class="hidden"><span>Editable transcript — correct names, numbers and “no” before sending</span><button id="discard" type="button" class="text-button">Discard recording</button></div>
+          <div class="input-actions">
+            <button id="record" type="button" class="secondary">● Record voice</button>
+            <button id="cancelRecord" type="button" class="secondary hidden">Cancel</button>
+            <button id="submit" type="submit" class="primary">Continue →</button>
+          </div>
+          <p id="status" role="status"></p>
+          <button id="retryAudio" type="button" class="secondary hidden">Retry transcription</button>
+        </form>
+    <section class="examples">
+      <div class="examples-heading"><span class="step">QUICK EXAMPLES</span></div>
+      <div>
+        <button data-example="I have stomach ache">Stomach pain</button>
+        <button data-example="Mujhe sir mein dard hai">Headache</button>
+        <button data-example="I need someone to change my prescribed wound dressing at home">Wound dressing</button>
+        <button data-example="I have had a fever for ten days, around 103°F">Prolonged fever</button>
+        <button data-example="पापा को तेज सीने में दर्द है और सांस नहीं आ रही">Emergency bypass</button>
+      </div>
+    </section>
+        <details class="preferences">
+          <summary>Advanced settings</summary>
+          <div class="location"><label>Latitude<input id="lat" type="number" step="any" min="-90" max="90" value="28.54"></label><label>Longitude<input id="lng" type="number" step="any" min="-180" max="180" value="77.27"></label></div>
+          <p id="clock">Roster uses an explicit reference clock.</p>
+          <p>Use synthetic examples only. Conversation stays in this page’s memory. Voice recordings go to Sarvam for transcription when configured. Text stays on this server. Recordings are not saved by this app.</p>
+        </details>
+      </section>
+      <aside class="panel result-panel" aria-label="Your next step">
+        <div class="result-eyebrow"><span class="step">YOUR NEXT STEP</span><span class="result-decorative-dot" aria-hidden="true"></span></div>
+        <div id="result">
+          <div class="empty-icon">↗</div>
+          <h2 id="waitingTitle">Care begins with understanding</h2>
+          <p id="waitingText">Your recommendation and available caregivers will appear here. If a warning sign is established, emergency help takes priority.</p>
+        </div>
+        <div id="booking" class="hidden" role="status"></div>
+      </aside>
+      </div>
+    </div>
+    <footer><span>© SehatSaathi · Diligence</span><span>No medical diagnosis, prescription, real booking or dispatch. If someone is in immediate danger, call <a href="tel:112">112</a>.</span></footer>
+  </main>
+<dialog id="how"><button id="closeHow" class="close" type="button" aria-label="Close">×</button><div class="eyebrow">HOW IT WORKS</div><h2>From “what now?”<br>to a clear next step.</h2><p>1. Describe your symptoms or care needs in English, Hindi or Hinglish. You can type or record your voice.</p><p>2. Answer the relevant follow-up questions to help choose a care pathway.</p><p>3. Review your recommendation and eligible caregivers. Booking is simulated; no request is sent.</p><p>This prototype cannot diagnose, prescribe or dispatch help. If someone is in immediate danger, call 112.</p></dialog>
+</body>
+</html>

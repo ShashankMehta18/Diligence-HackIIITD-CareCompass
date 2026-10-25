@@ -1,0 +1,146 @@
+[
+  {
+    "id": "S0011",
+    "caregiver_id": "CG_042",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "elderly_care;vitals_monitoring;injection_im;sample_collection;injection_iv;nebulization;post_surgical_care"
+  },
+  {
+    "id": "S0011",
+    "caregiver_id": "CG_060",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "catheter_care;elderly_care;wound_dressing;post_surgical_care;vitals_monitoring"
+  },
+  {
+    "id": "S0069",
+    "caregiver_id": "CG_032",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "wound_dressing;sample_collection;injection_iv;vitals_monitoring;nebulization"
+  },
+  {
+    "id": "S0099",
+    "caregiver_id": "CG_019",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;elderly_care;injection_im;wound_dressing"
+  },
+  {
+    "id": "S0099",
+    "caregiver_id": "CG_046",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "post_surgical_care;sample_collection;nebulization;injection_iv;catheter_care;vitals_monitoring"
+  },
+  {
+    "id": "S0102",
+    "caregiver_id": "CG_050",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;injection_im;nebulization;wound_dressing;sample_collection"
+  },
+  {
+    "id": "S0143",
+    "caregiver_id": "CG_019",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;elderly_care;injection_im;wound_dressing"
+  },
+  {
+    "id": "S0143",
+    "caregiver_id": "CG_046",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "post_surgical_care;sample_collection;nebulization;injection_iv;catheter_care;vitals_monitoring"
+  },
+  {
+    "id": "S0147",
+    "caregiver_id": "CG_050",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;injection_im;nebulization;wound_dressing;sample_collection"
+  },
+  {
+    "id": "S0158",
+    "caregiver_id": "CG_052",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;catheter_care;post_surgical_care;sample_collection;nebulization;injection_im;injection_iv"
+  },
+  {
+    "id": "S0186",
+    "caregiver_id": "CG_042",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "elderly_care;vitals_monitoring;injection_im;sample_collection;injection_iv;nebulization;post_surgical_care"
+  },
+  {
+    "id": "S0186",
+    "caregiver_id": "CG_060",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "catheter_care;elderly_care;wound_dressing;post_surgical_care;vitals_monitoring"
+  },
+  {
+    "id": "S0203",
+    "caregiver_id": "CG_050",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;injection_im;nebulization;wound_dressing;sample_collection"
+  },
+  {
+    "id": "S0204",
+    "caregiver_id": "CG_052",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "vitals_monitoring;catheter_care;post_surgical_care;sample_collection;nebulization;injection_im;injection_iv"
+  },
+  {
+    "id": "S0264",
+    "caregiver_id": "CG_032",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "wound_dressing;sample_collection;injection_iv;vitals_monitoring;nebulization"
+  },
+  {
+    "id": "S0287",
+    "caregiver_id": "CG_060",
+    "issue": "missing_explicit_skill",
+    "required_skills": [
+      "bp_sugar_check"
+    ],
+    "listed_skills": "catheter_care;elderly_care;wound_dressing;post_surgical_care;vitals_monitoring"
+  }
+]

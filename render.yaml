@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: carecompass-final
+    env: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: SARVAM_API_KEY
+        sync: false

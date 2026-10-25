@@ -1,0 +1,610 @@
+[
+  {
+    "id": "S0004",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0008",
+    "user_input": "wo achanak gir gaye response nahi de rahe",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0015",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0032",
+    "user_input": "Heavy bleeding that won't stop after an accident",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0047",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0085",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0090",
+    "user_input": "He suddenly collapsed and is not responding",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0091",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0092",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0106",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0111",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0118",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0120",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0127",
+    "user_input": "एक्सीडेंट के बाद खून नहीं रुक रहा",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0141",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0157",
+    "user_input": "Heavy bleeding that won't stop after an accident",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0173",
+    "user_input": "He suddenly collapsed and is not responding",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0196",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0201",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0207",
+    "user_input": "Heavy bleeding that won't stop after an accident",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0212",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0221",
+    "user_input": "wo achanak gir gaye response nahi de rahe",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0236",
+    "user_input": "He suddenly collapsed and is not responding",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0243",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0249",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0251",
+    "user_input": "Heavy bleeding that won't stop after an accident",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0253",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0254",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0255",
+    "user_input": "He suddenly collapsed and is not responding",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0269",
+    "user_input": "He suddenly collapsed and is not responding",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0270",
+    "user_input": "एक्सीडेंट के बाद खून नहीं रुक रहा",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0275",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0278",
+    "user_input": "accident ke baad bleeding ruk nahi rahi",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0283",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0296",
+    "user_input": "wo achanak gir gaye response nahi de rahe",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0310",
+    "user_input": "वो अचानक गिर गए और जवाब नहीं दे रहे",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0313",
+    "user_input": "wo achanak gir gaye response nahi de rahe",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "unconsciousness"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported collapse and unresponsiveness require emergency assistance.",
+    "status": "proposed_not_applied"
+  },
+  {
+    "id": "S0337",
+    "user_input": "एक्सीडेंट के बाद खून नहीं रुक रहा",
+    "field": "red_flags",
+    "original": [
+      "chest_pain",
+      "breathlessness"
+    ],
+    "proposed": [
+      "severe_bleeding"
+    ],
+    "rationale": "Explicit current uncontrolled bleeding or collapse/unresponsiveness supports the proposed flag; chest pain/breathlessness are not reported. Proposal requires review.",
+    "original_reasoning": "Red-flag symptoms detected (chest_pain, breathlessness); routed to emergency services, not home care.",
+    "proposed_reasoning": "Reported uncontrolled bleeding requires emergency assistance.",
+    "status": "proposed_not_applied"
+  }
+]

@@ -1,0 +1,3 @@
+'use strict';
+fetch('/openapi.json').then(r=>r.json()).then(x=>{document.getElementById('schema').textContent=JSON.stringify(x,null,2);});
+document.getElementById('apiForm').onsubmit=async e=>{e.preventDefault();const target=document.getElementById('apiResponse');try{const data=JSON.parse(document.getElementById('requestBody').value);target.textContent='Sending…';const r=await fetch('/triage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});target.textContent='HTTP '+r.status+'\n'+JSON.stringify(await r.json(),null,2);}catch(error){target.textContent=error.message;}};

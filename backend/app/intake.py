@@ -72,7 +72,10 @@ def extract_local(text,question=None):
             x.associated_symptoms.append(SymptomEvidence(name=name,status='denied' if denied else 'affirmed',quote=text))
     for risk,pattern in {'pregnancy':r'pregnant|गर्भवती','diabetes':r'diabetes|diabetic|मधुमेह','immunosuppression':r'immunosuppress|chemotherapy'}.items():
         if re.search(pattern,t) and not re.search(r'(?:no|not)\s+(?:'+pattern+r')',t):x.risk_factors.append(risk)
-    x.fever=True if re.search(r'fever|bukhar|बुखार',t) else None
+    from .assertions import status as assertion_status
+    fever_hit=re.search(r'fever|bukhar|बुखार',t)
+    fever_status=assertion_status(t,fever_hit) if fever_hit else None
+    x.fever=True if fever_status=='affirmed' else False if fever_status=='denied' else None
     if re.search(r'no\s+fever|bukhar\s+nahi|बुखार\s+नहीं',t):x.fever=False
     if x.temperature is not None and x.temperature_unit and x.temperature_timing!='historical':
         x.fever=(x.temperature>=38 if x.temperature_unit=='C' else x.temperature>=100.4)
@@ -105,25 +108,38 @@ class State:
     contradictions: list=field(default_factory=list)
     established_emergencies: list=field(default_factory=list)
     additional_concerns: list=field(default_factory=list)
+    safety_findings: list=field(default_factory=list)
+    extraction_conflicts: list=field(default_factory=list)
+    unresolved_service_intent: bool=False
     def merge(self,x,text,index):
         new_patient=x.patient
         # Explicit new patient starts an independent assessment.
         if self.facts.patient and new_patient and self.facts.patient!=new_patient:
-            self.facts=Extraction();self.flags={};self.evidence=[];self.asked=[];self.possible_recent_emergency=False;self.contradictions=[];self.established_emergencies=[];self.additional_concerns=[]
+            self.facts=Extraction();self.flags={};self.evidence=[];self.asked=[];self.possible_recent_emergency=False;self.contradictions=[];self.established_emergencies=[];self.additional_concerns=[];self.safety_findings=[];self.extraction_conflicts=[];self.unresolved_service_intent=False
         correction=bool(re.search(r'correction|misheard|transcri|meant|actually|गलत|not .*but|नहीं.*बल्कि',normalise(text)))
         # A newly reported focal symptom must be safety-screened even when it is
         # associated with a different main complaint. Never transfer its pain
         # severity/duration to the original complaint just to fit one slot.
-        independent=SimpleNamespace(facts=x)
+        from .safety_screen import screen
+        from .assertions import UNCERTAIN
+        if x.service:self.unresolved_service_intent=bool(re.search(UNCERTAIN,normalise(text)))
+        new_safety=screen(text)
+        if correction:
+            replaced={v.rule_id for v in new_safety}
+            self.safety_findings=[v for v in self.safety_findings if v.rule_id not in replaced]
+        resolved={v.rule_id for v in new_safety if v.status!='unknown'}
+        self.safety_findings=[v for v in self.safety_findings if v.status!='unknown' or v.rule_id not in resolved]
+        self.safety_findings.extend(new_safety)
+        independent=SimpleNamespace(facts=x,safety_findings=new_safety)
         independent_danger=emergency_evidence(independent)
         independent_concern=broad_concern(independent)
         different=bool(self.facts.complaint and x.complaint and self.facts.complaint!=x.complaint and self.facts.complaint!='other' and not correction)
-        for key in ['patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','pain_location','sudden_onset']:
+        for key in ['body_site','trigger','patient','age_months','duration_days','temperature','temperature_unit','temperature_timing','onset','progression','fever','service','complaint','complaint_text','severity','pain_location','sudden_onset']:
             value=getattr(x,key)
             previous=getattr(self.facts,key)
-            if key=='complaint' and previous and previous!='other' and value and value!=previous and not correction:
+            if key=='complaint' and previous and previous!='other' and value and value!=previous and not correction and self.question!='complaint_clarify':
                 continue  # An associated symptom does not silently replace the main complaint.
-            if different and key in ('duration_days','severity','pain_location','sudden_onset','onset'):continue
+            if different and key in ('duration_days','severity','pain_location','body_site','trigger','sudden_onset','onset','complaint_text') and not correction and self.question!='complaint_clarify':continue
             if key in ('age_months','duration_days','temperature') and value is not None and previous is not None and value!=previous and not correction:
                 self.contradictions.append({'field':key,'previous':previous,'latest':value,'turn':index,'status':'latest_user_value_retained_review_needed'})
             if value is not None: setattr(self.facts,key,value)
@@ -183,6 +199,8 @@ def active_flags(state):
     if f.age_months is not None and f.age_months<3 and f.fever:
         flags.add('high_fever_infant')
     if has(state,'new_one_sided_weakness'):flags.add('stroke_symptoms')
+    from .safety_screen import actionable
+    flags.update(v.flag for v in actionable(state.safety_findings) if v.flag and v.disposition=='emergency')
     return sorted(flags)
 
 def concern(state):
@@ -198,6 +216,8 @@ def concern(state):
 
 def next_question(state):
     f=state.facts
+    from .safety_screen import actionable
+    if any(v.disposition=='urgent_assessment' for v in actionable(state.safety_findings)):return None
     if len(state.asked)>=4:return None
     # Explicit procedures bypass unrelated symptom interviews.
     if f.service=='injection_unknown' and 'injection' not in state.asked:return 'injection'

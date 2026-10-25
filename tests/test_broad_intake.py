@@ -90,7 +90,7 @@ def test_supplied_context_not_asked_again():
  ('My father suddenly became confused','New sudden confusion'),
  ('I have urinary pain and cannot pass any urine','Unable to pass urine'),
  ('My headache came on suddenly and is severe','Sudden extremely painful headache'),
- ('Sudden eye pain','Sudden-onset eye symptoms'),
+ ('Sudden eye pain','Sudden-onset eye pain'),
  ('Pet ko chune par dard hota hai','Abdominal pain on touch'),
  ('Meri jeebh me sujan hai','Tongue or throat swelling'),
 ])

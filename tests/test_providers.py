@@ -35,7 +35,8 @@ def test_malformed_output_and_bounded_retry():
         request=Request(user_input='Need help',location={'lat':0,'lng':0})
         try:
             with pytest.raises(ProviderError,match='rate_limit'):await p.extract(request)
-            assert len(calls)==2
+            assert len(calls)==1
+            p._cooldowns['text']=0  # Simulate expiry before the independent malformed-response check.
             async def malformed(r):return httpx.Response(200,json={'choices':[{'message':{'content':'{"care_type":"invented"}'}}]})
             await p.text_client.aclose();p.text_client=httpx.AsyncClient(transport=httpx.MockTransport(malformed),base_url='https://synthetic.test/')
             with pytest.raises(ProviderError,match='malformed_text_output'):await p.extract(request)

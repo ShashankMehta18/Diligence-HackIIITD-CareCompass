@@ -1,0 +1,12 @@
+﻿rule_id,prototype_action,primary_source,review_status,reviewer_id,review_date,adjudicated_action,rationale,training_ready
+eye_chemical,emergency,https://www.nhs.uk/conditions/eye-injuries/,pending,,,,,False
+eye_penetrating,emergency,https://www.nhs.uk/conditions/eye-injuries/,pending,,,,,False
+eye_discharge_blood,emergency,https://www.nhs.uk/conditions/eye-injuries/,pending,,,,,False
+eye_injury_vision,emergency,https://www.nhs.uk/conditions/eye-injuries/,pending,,,,,False
+eye_severe_pain,emergency,https://www.nhs.uk/conditions/eye-injuries/,pending,,,,,False
+focal_neurology,emergency,https://www.nhs.uk/conditions/stroke/symptoms/,pending,,,,,False
+acute_speech,emergency,https://www.nhs.uk/conditions/stroke/symptoms/,pending,,,,,False
+face_droop,emergency,https://www.nhs.uk/conditions/stroke/symptoms/,pending,,,,,False
+toxic_ingestion,emergency,https://www.nhs.uk/conditions/poisoning/,pending,,,,,False
+acute_testicular_pain,emergency,https://www.nhs.uk/symptoms/testicle-pain/,pending,,,,,False
+medication_excess,urgent_assessment,https://www.nhs.uk/medicines/paracetamol-for-adults/,pending,,,,,False

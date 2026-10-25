@@ -1,0 +1,8 @@
+{
+  "cases": 96,
+  "complete_conversations": 24,
+  "sha256": "f84bd90f338fc9714e39e0485ac3868f45a69c5ec97a37ef292b9b8812f85c0a",
+  "provenance": "Developer/AI-authored new synthetic audit cases; not clinical ground truth; no real patient data. Frozen before API batch observations; browser pilot separate.",
+  "location": "Fixed synthetic demo location from app default, not user location",
+  "training_allowed": false
+}

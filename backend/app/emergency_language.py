@@ -14,7 +14,7 @@ def canonical(text):
 
 PATTERNS={
  'chest_pain':r"\bchest\s+(?:pain|tightness|pressure|heaviness)\b|\b(?:pain|pressure|tightness|heaviness)\s+(?:in\s+|on\s+)?(?:my\s+|the\s+)?chest\b|\b(?:seene?|chh?ati|chhaati)\s*(?:me|mein)?\s*(?:dard|pain|dabav|dabaav|jakdan)|(?:सीने|छाती)\s*(?:में)?\s*(?:तेज\s*)?(?:दर्द|दबाव|जकड़न)",
- 'breathlessness':r"\b(?:can.?t|cannot|unable\s+to|struggl(?:e|ing)\s+to)\s+breathe\b|\b(?:difficulty|difficulties|trouble)\s+(?:in\s+)?breath(?:ing)?|\bbreath(?:ing)?\s+(?:difficulty|difficulties|problems?)\b|\bshort(?:ness)?\s+of\s+breath\b|\bbreathless\b|\bgasping\s+for\s+(?:air|breath)\b|\b(?:cannot|can't)\s+get\s+(?:enough|any)\s+air\b|\btrouble\s+catching\s+(?:my\s+|his\s+|her\s+)?breath\b|\bsa+a?n?s\s*(?:nahi|nahin|nai)\s+aa\s+rah[ai]\b|\bsa+a?n?s\s*(?:lene\s*(?:me|mein)\s*)?(?:ki\s*)?(?:bahut\s*)?(?:dikk?at|takli+f|takleef)|\bdam\s+(?:ghut|ghoot)\s+rah[ai]|(?:सांस|साँस)\s+नहीं\s+आ\s+रही|(?:सांस|साँस)\s*(?:लेने\s*में|की)?\s*(?:बहुत\s*)?(?:तकलीफ|तकलीफ़|दिक्कत)|दम\s*घुट\s*रहा",
+ 'breathlessness':r"\b(?:can.?t|cannot|unable\s+to|struggl(?:e|ing)\s+to)\s+breathe\b|\b(?:difficulty|difficulties|trouble)\s+(?:in\s+)?breath(?:ing)?|\bbreath(?:ing)?\s+(?:difficulty|difficulties|problems?)\b|\bshort(?:ness)?\s+of\s+breath\b|\bbreathless\b|\bgasping(?:\s+for\s+(?:air|breath))?\b|\b(?:cannot|can't)\s+get\s+(?:enough|any)\s+air\b|\btrouble\s+catching\s+(?:my\s+|his\s+|her\s+)?breath\b|\bsa+a?n?s\s*(?:nahi|nahin|nai)\s+aa\s+rah[ai]\b|\bsa+a?n?s\s*(?:lene\s*(?:me|mein)\s*)?(?:ki\s*)?(?:bahut\s*)?(?:dikk?at|takli+f|takleef)|\bdam\s+(?:ghut|ghoot)\s+rah[ai]|(?:सांस|साँस)\s+नहीं\s+आ\s+रही|(?:सांस|साँस)\s*(?:लेने\s*में|की)?\s*(?:बहुत\s*)?(?:तकलीफ|तकलीफ़|दिक्कत)|दम\s*घुट\s*रहा",
  'unconsciousness':r"\bunconscious\b|\bunresponsive\b|\bnot\s+responding\b|\bcollapsed\b|\bpassed\s+out\b|\b(?:will\s+not|won't|cannot|can't)\s+wake\s+up\b|\bresponse\s+nahi\s+de\s+rahe|\bbehosh\b|\bhosh\s*(?:nahi|nahin|nai)\s+aa\s+rah[ai]|\b(?:awa+z\s+dene\s+par\s+)?jawab\s*(?:nahi|nahin)\s+de\s+rah[ea]|बेहोश|होश\s*नहीं\s*आ\s*रहा|(?:आवाज़\s*देने\s*पर\s*)?जवाब\s+नहीं\s+दे\s+रहे",
  'severe_bleeding':r"\b(?:heavy|severe|uncontrolled|profuse)\s+bleeding\b|\bbleeding\s+(?:heavily|profusely)\b|\bbleeding\s+(?:that\s+)?(?:won.?t|will\s+not|does\s+not|doesn.?t)\s+stop\b|\bblood\s+(?:is\s+)?(?:gushing|spurting|pouring)\b|\bbleeding\s+ruk\s+nahi|\b(?:bahut|bohot|bohut)\s+(?:khoon|khun)\b|\b(?:khoon|khun)\s*(?:beh\s*na\s*)?ruk\s*(?:nahi|nahin)|खून\s*नहीं\s*रुक|बहुत\s*खून|खून\s*फव्वारे\s*की\s*तरह",
  'stroke_symptoms':r"\b(?:face|side\s+of\s+(?:his\s+|her\s+|my\s+)?face)\s+(?:is\s+)?droop(?:ing)?|\b(?:slurred\s+speech|speech.{0,18}slurred|words\s+(?:are\s+)?slurred)\b|\bsudden\s+(?:one.sided|arm|leg)\s+weakness\b|\bsuddenly.{0,25}(?:left|right|one)\s+(?:arm|leg).{0,15}weak|\b(?:new|sudden)\s+weakness\s+(?:on|down)\s+one\s+side|\b(?:ek|aik)\s+taraf\s*(?:ka|ki|ke)?\s*(?:haath?|pair|bazu)\s+kaam\s*(?:nahi|nahin)\s+kar|\bchehra\s+tedha\b|\b(?:achanak\s+)?boli\s+ladkhada|चेहरा\s+टेढ़ा|अचानक\s+एक\s+तरफ\s+कमजोरी|(?:शरीर\s*के\s*)?एक\s*तरफ.{0,15}(?:हाथ|पैर).{0,12}काम\s*नहीं|अचानक.{0,20}बोलने\s*में\s*दिक्कत",
@@ -34,7 +34,7 @@ NEGATIONS={
  'severe_dehydration':r'no\s+severe\s+dehydration|not\s+severely\s+dehydrated',
 }
 
-HISTORY=r'\b(?:last\s+year|years?\s+ago|history\s+of|used\s+to|previously|resolved|no\s+longer|gone\s+now)\b|पिछले\s*साल|\bpehle\b'
+HISTORY=r'\b(?:last\s+year|last\s+week|months?\s+ago|years?\s+ago|history\s+of|used\s+to|previously|resolved|no\s+longer|gone\s+now)\b|पिछले\s*साल|\bpehle\b'
 HYPOTHETICAL=r"\b(?:what\s+if|hypothetical|example|quoted|if\s+(?:someone|i|he|she))\b|अगर|\bagar\b"
 UNCERTAIN=r"\b(?:not\s+sure|don't\s+know|do\s+not\s+know|cannot\s+tell|can't\s+tell|maybe|might\s+be|pata\s+nahi)\b|पता\s*नहीं"
 PREFIX_DENIAL=r"(?:\bno|\bnot|\bnever|\bwithout|\bdenies|\bdeny|\bdon't|\bdoesn't|\bisn't|\baren't)\s+(?:(?:any|currently|having|have|has|a|an|been|feeling|experiencing|sudden|severe|current|really|gasping|for|air)\s+)*$"
@@ -46,6 +46,7 @@ def mention_status(clause,hit,flag):
     negatives=list(re.finditer(NEGATIONS.get(flag,r'(?!)'),clause))
     if any(n.start()<=hit.start() and n.end()>=hit.end() for n in negatives):return 'denied'
     before=clause[max(0,hit.start()-85):hit.start()]
+    if re.search(r'\b(?:no|not|without)\b',before) and re.search(r'\b(?:or|nor)\s*$',before):return 'denied'
     after=clause[hit.end():hit.end()+35]
     if re.search(PREFIX_DENIAL,before) or re.search(r'^\s*(?:nahi|nahin|nai|नहीं|नही)(?:\s|$)',after):return 'denied'
     return 'affirmed'

@@ -48,6 +48,12 @@ async function until(fn){for(let n=0;n<150;n++){if(fn())return;await pause(25);}
  assert.match($('result').textContent,/Assessment not completed/);
  assert.equal($('message').value,'My ear hurts');
  w.fetch=normalFetch;w.setTimeout=normalTimer;
+ $('reset').click();await submit('Toilet cleaner splashed into my eye.');
+ assert.match($('result').textContent,/Emergency help now/);
+ assert.equal($('result').querySelector('a').getAttribute('href'),'tel:112');
+ $('reset').click();await submit('It burns when I pass urine.');
+ assert.match($('chat').textContent,/completely unable to pass urine/);
+ assert.doesNotMatch($('chat').textContent,/wound open or leaking/);
  $('reset').click();$('language').value='hi';$('language').dispatchEvent(new w.Event('change'));
  await submit('मुझे पेट में दर्द है');assert.ok([...$('answers').querySelectorAll('button')].some(b=>b.textContent==='हल्का'));
  $('reset').click();$('transcriptTools').classList.remove('hidden');$('message').value='I am vomiting blood';$('message').dispatchEvent(new w.Event('input'));

@@ -10,7 +10,7 @@ from fastapi import FastAPI,File,Form,HTTPException,UploadFile,Request as HTTPRe
 from fastapi.responses import FileResponse,JSONResponse
 from fastapi.staticfiles import StaticFiles
 from .config import ROOT,MODE,MAX_AUDIO_BYTES,REFERENCE_TIME
-from .core import assess
+from .core import assess,language
 from .intake import detect_flags,extract_local,State,active_flags,replay
 from .complaints import emergency_evidence
 from .providers import GroqAccounts,ProviderError
@@ -24,7 +24,7 @@ async def lifespan(app):
 
 app = FastAPI(
     title="CareCompass · Diligence",
-    version="0.4.0",
+    version="0.5.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url=None,
@@ -78,12 +78,12 @@ async def headers(request,call_next):
 
 @app.exception_handler(ProviderError)
 async def provider_error(request,error):
-    return JSONResponse(status_code=503,content={'detail':{'code':error.kind,'message':'Assessment/transcription unavailable. Try again or seek human clinical assessment. For immediate danger call 112. No help has been dispatched.'}})
+    return JSONResponse(status_code=503,content={'detail':{**error.public(),'message':'Assessment/transcription unavailable. Try again or seek human clinical assessment. For immediate danger call 112. No help has been dispatched.'}})
 
 @app.get('/health')
 async def health(request:HTTPRequest):
     p=request.app.state.providers
-    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.4.0'}
+    return {'status':'ok','text_mode':'live_configured_not_verified' if (MODE=='live' or MODE=='auto' and p.text_key) else 'rules_baseline','audio_mode':'live_configured_not_verified' if p.audio_key else 'unavailable_no_key','reference_time':REFERENCE_TIME,'synthetic_demo':True,'version':'0.5.0','provider_status':p.diagnostics()}
 
 @app.post('/triage',response_model=Response)
 async def triage(body:Request,request:HTTPRequest):
@@ -96,17 +96,22 @@ async def triage(body:Request,request:HTTPRequest):
 async def ui_triage(body:Request,request:HTTPRequest):
     try:
         result,meta=await asyncio.wait_for(assess(body,request.app.state.providers),timeout=35)
-    except (ProviderError,asyncio.TimeoutError):
+    except (ProviderError,asyncio.TimeoutError) as error:
         # Text-provider failures must not strand the interview on its last
         # question. Replay the same submitted answer through the local policy.
         # Keep /triage strict and its provider-error contract unchanged.
         result,meta=await assess(body,mode='rules')
         meta['engine']='rules_fallback'
         meta['provider_status']='unavailable'
+        meta['provider_failure']=error.public() if isinstance(error,ProviderError) else {'code':'text_deadline'}
         meta['notice']='The text service is unavailable. Local rules were used; this is not a diagnosis.'
         if result.follow_up_question is None and result.care_type!='emergency_112':
             result=Response(follow_up_question=None,care_type='teleconsultation',urgency='same_day',red_flags=[],matched_caregivers=[],reasoning='The text service is unavailable. The available information cannot establish a safe routine pathway. Seek human clinical assessment. No caregiver has been booked or dispatched.')
             meta.update(assessment_status='needs_human_assessment',routine_booking_allowed=False,caregivers=[])
+    if language(body)=='Hindi':
+        if meta.get('concern'):meta['concern']='इन लक्षणों के लिए शीघ्र चिकित्सकीय आकलन चाहिए। मदद लेने में इस चैट के कारण देर न करें।'
+        if meta.get('provider_status')=='unavailable' and result.follow_up_question is None and result.care_type!='emergency_112':
+            result=result.model_copy(update={'reasoning':'टेक्स्ट सेवा उपलब्ध नहीं है। उपलब्ध जानकारी से सामान्य देखभाल की उपयुक्तता तय नहीं हुई। किसी चिकित्सक से शीघ्र आकलन कराएँ। कोई देखभालकर्ता बुक या भेजा नहीं गया है।'})
     return {'response':result.model_dump(),'ui':meta}
 
 @app.post('/ui/safety')

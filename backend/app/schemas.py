@@ -79,6 +79,8 @@ class ClinicalFinding(Strict):
 class Extraction(Strict):
     complaint: Complaint | None = None
     complaint_text: str | None = Field(default=None,max_length=300)
+    body_site: str | None = Field(default=None,max_length=80)
+    trigger: str | None = Field(default=None,max_length=160)
     severity: Literal['mild','moderate','severe'] | None = None
     pain_location: str | None = Field(default=None,max_length=160)
     sudden_onset: bool | None = None

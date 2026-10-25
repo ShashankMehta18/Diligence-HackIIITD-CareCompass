@@ -1,45 +1,37 @@
-# Verification — version 0.4
+# Verification — version 0.5
 
-Measured 24 October 2026 against the user-uploaded team's source. Synthetic data and stub providers only; no clinical validation. This record supersedes the previous 0.2 verification claims.
+Measured 25 October 2026. This supersedes the 0.4 verification record. Synthetic cases only; clinical review, independent clinical validation, real provider verification and public deployment verification remain pending.
 
-| Check | Result |
+| Engineering check | Result |
 |---|---|
-| Python suite | 222 passed; one Starlette TestClient deprecation warning |
-| New safety development suite | 215/216 checks passed; uploaded baseline 147/216 using identical evaluator |
-| Active warnings in new suite | Update 52/52; baseline 18/52 |
-| False emergencies in 164 negative cases | Update 1; baseline 3 |
-| Unknown-answer conversations | No routine matches; explicit human-assessment result after cap |
-| Ear-pain final step | Successful four-question flow concludes; provider-error, ungrounded-output and deadline stubs conclude with explicit fallback/human assessment |
-| HTTP / DOM | Real Uvicorn + jsdom passed stomach/matching/simulated booking, emergency bypass, Hindi, transcript correction, ear/dizziness final outcomes, network error and retry; no DOM runtime errors |
-| JavaScript | `node --check frontend/app.js` passed |
-| Compatibility | Six-field strict response, 45 named families plus other, specialty roster/matcher, Swagger and custom explorer retained |
-| Live Groq / real microphone | Not run; fake-provider tests do not establish live extraction accuracy |
-| Visual browser / Docker / deployment | Not run here; no deployment or GitHub change performed |
-| Clinical validation | Not performed; finite prototype rules require independent clinical review |
+| Python suite |299 passed; one Starlette TestClient deprecation warning |
+| Offline audit replay |96 cases, same frozen inputs and runner in baseline/current checkouts |
+| Immediate emergency against original provisional warning labels |0.4 rules7/28;0.5 rules27/28; the remaining medication case receives immediate urgent human assessment instead |
+| Named complaint extraction |0.4 rules33/45;0.5 rules45/45 on these specific intended-topic examples |
+| Conversation endings |20/20 full scripts conclude;8/8 unknown-answer cases withhold matches; at most 4 questions, no repeated IDs |
+| Strict response shape |96/96 audit cases; existing six fields/care enums retained |
+| Older216 development suite |215/216,52/52 active warnings, one disclosed contradictory history/current negative control |
+| HTTP / DOM |Real local Uvicorn + jsdom: existing stomach/matching/simulated booking, Hindi, emergency bypass, four-question ear/dizziness finals, network error/timeout/retry, chemical-eye emergency and urinary question routing passed; no DOM runtime errors |
+| JavaScript |node --check frontend/app.js passed |
+| Provider tests |Strict/portable payload, local validation, current-patient grounding, safe rejection diagnostics, no immediate429 retry, cooldown/audio isolation and local-answer quota avoidance tested with fake transports |
+| Live Groq / real microphone / visual browser |Not verified for this release |
+| Docker / deployed0.5 |Not run or deployed here |
+| Clinical review |Pending; review kit supplied, not signed off |
 
-The remaining synthetic failure (`safety-138`) contradicts resolved historical framing with a seizure happening “abhi” (now). It is conservatively treated as emergency. The negative fixture label requires independent adjudication. See `evaluation_safety/README.md`; do not interpret 215/216 as clinical accuracy or a blind test result. The suite was authored before the patch, then used during development. Its variants are not independent clinical samples.
+## Important interpretation
 
-## Organiser data, all 340 rows
+The 96-case replay is a regression after inspecting the deployed audit. It is not blind validation. Both comparison checkouts run rules only: the earlier deployed audit mixed55 live,115 fallback and8 local responses over178 turns and is a different execution condition. No clinical accuracy or reliability guarantee is derived from either count.
 
-| Descriptive check | Uploaded baseline | Update |
-|---|---:|---:|
-| Care macro-F1 | 0.7958 | 0.7228 |
-| Labelled emergencies detected | 56/56 | 56/56 |
+LIVE-064 remains a mismatch against the original provisional emergency label. It no longer stalls or offers routine booking: it immediately recommends urgent professional assessment. This is a deliberate source-specific urgency distinction, not a hidden excluded failure. The frozen label still needs clinical adjudication. The older safety-138 contradiction is also retained and disclosed.
 
-Current urgency macro-F1 is 0.7440. Schema compliance is 1.0 for successful assessed responses. Matching proxies on the 209 nonempty-reference rows: Hit@1 0.3445, Recall@3 0.3676, NDCG@3 0.3504; 131 empty-reference rows excluded. No ID/active/role/radius violations occurred. These checks do not establish the correctness of medical triage or all eligibility conditions.
+New paraphrase/control tests are developer-authored during development, not an external holdout. Finite vocabularies and temporal/coreference rules can still fail outside coverage. Passing a schema or ending a conversation cannot establish medically correct triage.
 
-Agreement with the old labels decreased because this policy asks additional relevant questions rather than immediately matching some underspecified requests. No overall accuracy improvement is claimed. Rules were authored after inspecting supplied templates; this is descriptive label agreement. Complete current outputs are `evaluation_safety/organiser/`; the exact uploaded baseline metrics are `evaluation_safety/organiser_baseline_metrics.json`. Existing `evaluation/` and `evaluation_all/` files are historical and are not this release's current results.
+## Organiser data
 
-## Reproduce
+On all 340 supplied examples: care macro-F1 0.7228, urgency macro-F1 0.7440, labelled emergencies 56/56 with zero false emergencies against these labels, successful response schema compliance 1.0. These equal the 0.4 descriptive results on that dataset. Matching proxies: Hit@1 0.3445, Recall@3 0.3676, NDCG@3 0.3504 on 209 nonempty-reference rows; 131 empty-reference rows excluded. No ID/active/role/radius violations in this check. Full outputs are evaluation_0_5/organiser/. Earlier evaluation directories are historical.
 
-```bash
-python -m pytest -q
-python scripts/evaluate_safety.py --mode both
-python scripts/evaluate.py --mode rules --split all --out evaluation_safety/organiser
-node --check frontend/app.js
-# Optional DOM QA: start a rules-mode server, npm install, then npm run test:ui
-```
+## Remaining verification
 
-Run test/evaluation commands without live keys unless explicitly testing live mode. For the development safety suite, live execution requires `--allow-live` and an explicitly exported text key. Live errors are recorded separately, not silently counted as local success. The UI's separately tested availability fallback is deliberately distinct from this benchmark.
+After applying the guarded update, run tests, start locally and confirm /health version 0.5.0. Use scripts/check_provider.py --allow-live with your privately configured text account to diagnose actual provider behavior. Fake transports do not prove that the account's schema, permissions, quota or model succeeds live. No keys from uploaded archives were read or used. Review the safe provider status/cooldown; this code cannot increase provider quotas.
 
-Before the demo, follow `UPGRADE.md`, confirm `/health` version 0.4.0, test real accounts/recordings and both desktop/mobile visuals, and repeat the four-follow-up conclusion flow on the deployment. The package does not contain `.env`, repository history or local dependencies.
+Obtain qualified clinical review using docs/CLINICAL_REVIEW.md and clinical_review.csv, and test new independent examples across the intended patient population before clinical use/claims or model training. No GitHub push, Render deployment, real booking or dispatch was performed by this update.

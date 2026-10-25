@@ -1,6 +1,6 @@
-# SehatSaathi 0.4 · Team Diligence
+# SehatSaathi 0.5 · Team Diligence
 
-Runnable API-first synthetic care-navigation prototype. Version 0.4 adds multilingual warning recognition, unresolved-information gating, a separate development evaluation, and a final-answer/outage fix. See `UPGRADE.md` before updating an existing Git clone. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking, dispatch or public deployment.
+Runnable API-first synthetic care-navigation prototype. Version 0.5 repairs the deployed audit findings with complaint-independent safety intents, contextual extraction, explicit uncertainty handling, provider diagnostics/cooldowns and expanded regression checks. See `UPGRADE.md` before updating an existing Git clone. Text/Hindi/Hinglish intake, adaptive follow-ups, local emergency bypass, deterministic caregiver ranking, editable Groq voice transcription and simulated booking. No diagnosis, prescriptions, real booking or dispatch.
 
 ## Start in Docker (recommended)
 
@@ -74,22 +74,23 @@ Additional emergency evidence includes sudden severe abdominal pain, abdominal p
 
 Unresolved safety questions or prompt in-person assessment needs suppress routine matching/booking. Other symptoms with sufficient context use the available same-day doctor consultation as a coordination pathway, without implying it replaces necessary in-person or specialist care. Explicit procedure requests keep the direct workflow.
 
-The old 46-test count and baseline scores are superseded by the results in `docs/VERIFICATION.md` and `evaluation_safety/organiser/metrics.json`. The expanded prototype deliberately asks safety questions on some cases that the supplied labels route immediately; higher supplied-label agreement is not claimed. See `docs/BROAD_INTAKE.md` for source-to-rule mappings and known limitations, and `UPGRADE.md` for local replacement steps.
+The old 46-test count and baseline scores are superseded by the results in `docs/VERIFICATION.md` and `evaluation_0_5/organiser/metrics.json`. The expanded prototype deliberately asks safety questions on some cases that the supplied labels route immediately; higher supplied-label agreement is not claimed. See `docs/BROAD_INTAKE.md` for source-to-rule mappings and known limitations, and `UPGRADE.md` for local replacement steps.
 
 ## Run checks and evaluation
 
 ```bash
 python -m pytest -q
 node --check frontend/app.js
-python scripts/evaluate_safety.py --mode both
-python scripts/evaluate.py --mode rules --split all --out evaluation_safety/organiser
+python scripts/verify_release.py
+python scripts/evaluate_safety.py --mode both --out evaluation_0_5/previous_216_suite.json
+python scripts/evaluate.py --mode rules --split all --out evaluation_0_5/organiser
 ```
 
 The suite checks configured policies for all 45 named complaint categories and a conservative `other` fallback, plus all nine controlled emergency pathways, negation/history/hypothetical cases, late emergencies, short replies, corrections, patient isolation, eligibility, API invariants, real FFmpeg decoding/silence rejection, provider failures, separate account headers and mocked transcription. Provider stubs are not live API verification.
 
-Current checks and measured results are in `docs/VERIFICATION.md`. On all 340 supplied rows the current rules achieve care macro-F1 0.7228 and emergency detection 56/56, with zero false emergencies against those labels. Label agreement is lower than the uploaded baseline (0.7958 care macro-F1), because the policy asks more questions instead of immediately routing some underspecified cases. These descriptive results are not clinical accuracy. Earlier `evaluation/` and `evaluation_all/` outputs are historical; use `evaluation_safety/` for this release.
+Current checks and measured results are in `docs/VERIFICATION.md`. On all 340 supplied rows the current rules achieve care macro-F1 0.7228 and emergency detection 56/56, with zero false emergencies against those labels. Label agreement is lower than the uploaded baseline (0.7958 care macro-F1), because the policy asks more questions instead of immediately routing some underspecified cases. These descriptive results are not clinical accuracy. Earlier `evaluation/` and `evaluation_all/` outputs are historical; use `evaluation_0_5/` for this release.
 
-The organiser grouping script can also generate a 103-row validation subset, but rules were authored after inspecting the supplied data. Grouping alone does not make this a blind evaluation. No training or retrieval is used. Current full matrices are in `evaluation_safety/organiser/metrics.json`.
+The organiser grouping script can also generate a 103-row validation subset, but rules were authored after inspecting the supplied data. Grouping alone does not make this a blind evaluation. No training or retrieval is used. Current full matrices are in `evaluation_0_5/organiser/metrics.json`.
 
 ## Hidden-test exporter
 
@@ -141,3 +142,20 @@ Attribution: Sanocare synthetic care-triage dataset v1 (2026), provided for the 
 
 The frontend deliberately uses native HTML/CSS/JavaScript rather than React: this removes a build/dependency layer while providing the required complete flow. The API/core separation permits replacing it with React later without changing scoring behaviour.
 
+
+## Version 0.5 safety repair and review
+
+Read `docs/SAFETY_0_5.md` for the implementation/source mapping, `docs/VERIFICATION.md` for measured limits and `docs/CLINICAL_REVIEW.md` plus `docs/clinical_review.csv` for the pending qualified review. No model is trained and no clinical approval is claimed. The 96-case audit is now development regression data, not a blind test or training-ready clinical dataset.
+
+The strict `/triage` contract is retained. UI metadata adds structured complaint/body-site/trigger understanding, safety evidence and safe provider-failure diagnostics. `/health` exposes process-local provider connectivity/error/cooldown status without patient text or keys. Simple supported follow-up answers can run as `rules_contextual_answer`; this is explicitly not a live model call.
+
+A 429 respects Retry-After and does not immediately retry or switch accounts. Full local validation remains mandatory for provider output. The portable request schema and explicit low GPT-OSS reasoning effort are implementation changes, not proof that an account's live requests succeed.
+
+```bash
+# Offline: no provider call
+python scripts/check_provider.py
+# Opt-in local diagnostic: at most two synthetic requests, uses text-account quota
+python scripts/check_provider.py --allow-live
+```
+
+The possible medication-excess case receives urgent human assessment with no routine questions/matches. This is deliberately distinct from automatic ambulance classification or a toxic-dose calculation; the original provisional audit label remains unchanged and requires adjudication.

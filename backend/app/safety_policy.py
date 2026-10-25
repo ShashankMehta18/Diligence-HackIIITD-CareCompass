@@ -107,6 +107,10 @@ def question_resolved(state,qid):
 
 def safety_gaps(state):
     from .complaints import BROAD_QUESTIONS
+    if getattr(state,'unresolved_service_intent',False):return [{'question_id':None,'kind':'uncertain_service_request','label':'The requested service is uncertain and needs human clarification.'}]
+    if getattr(state,'extraction_conflicts',[]):return [{'question_id':'complaint_clarify','kind':'extraction_conflict','label':'The complaint interpretations disagree and need clarification.'}]
+    uncertain=[v for v in getattr(state,'safety_findings',[]) if v.status=='unknown']
+    if uncertain:return [{'question_id':None,'kind':'uncertain_warning','label':'A possible warning sign remains unclear.'}]
     if service_only(state):return []
     c=state.facts.complaint
     if c not in REQUIRED_QUESTIONS or c=='other':

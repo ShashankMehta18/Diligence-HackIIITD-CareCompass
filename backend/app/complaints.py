@@ -1,4 +1,4 @@
-"""Complaint-aware intake and reviewed-rule candidates, never a diagnostic engine.
+"""Complaint-aware intake and source-informed rule candidates, never a diagnostic engine.
 See docs/BROAD_INTAKE.md for source-to-rule mappings and scope limitations.
 All 'emergency' predicates require affirmative evidence, not keyword presence.
 """
@@ -8,7 +8,8 @@ from dataclasses import dataclass
 from .schemas import ClinicalFinding,SymptomEvidence
 
 def norm(s):
-    return unicodedata.normalize('NFKC',s).casefold().translate(str.maketrans('०१२३४५६७८९','0123456789'))
+    from .emergency_language import canonical
+    return canonical(s)
 
 # Order gives focal complaints precedence over accompanying fever/fatigue.
 COMPLAINT_PATTERNS={
@@ -16,12 +17,12 @@ COMPLAINT_PATTERNS={
  'headache':r'migraine|head\s*ache|head\s+pain|(?:sar|sir)\s*(?:me|mein)?\s*dard|सिर.{0,10}दर्द',
  'vomiting':r'\bvomit(?:ing|ed|s)?\b|throw(?:ing)?\s+up|nausea|nauseous|\bulti\b|उल्टी',
  'diarrhoea':r'diarrh(?:oe|e)a|loose\s*(?:motions?|stools?)|watery\s*(?:stools?|poo)|दस्त|पतला\s*पाखाना',
- 'sore_throat':r'sore\s*throat|throat\s*pain|hoarse|tonsil|difficulty\s*swallowing|dry\s*mouth|gale?\s*(?:me|mein)?\s*(?:dard|kharash)|गले.{0,12}(?:दर्द|खराश)',
+ 'sore_throat':r'throat.{0,12}(?:is\s*)?sore|sore\s*throat|throat\s*pain|hoarse|tonsil|difficulty\s*swallowing|dry\s*mouth|gale?\s*(?:me|mein)?\s*(?:dard|kharash)|गले.{0,12}(?:दर्द|खराश)',
  'cough':r'\bcough(?:ing)?\b|khansi|खांसी|खाँसी',
- 'urinary':r'(?:burn(?:s|ing)?|pain|hurt).{0,20}(?:urinat|pee)|(?:urinat|pee).{0,20}(?:burn(?:s|ing)?|pain|hurt)|urinary|frequent\s*urinat|leakage|incontinence|kidney\s*stone|testicular|erectile|peshab.{0,15}(?:jalan|dard)|पेशाब.{0,12}(?:जलन|दर्द|नहीं)',
- 'back_pain':r'back\s*(?:ache|pain)|pain.{0,12}back|kamar.{0,12}dard|कमर.{0,12}दर्द|पीठ.{0,12}दर्द',
- 'wound':r'\bwound\b|dressing|zakham|ज़ख्म|\bcut\b|burn|bite|sting|घाव',
- 'injury':r'\binjur(?:y|ed)\b|sprain|twisted\s*(?:ankle|knee)|\bcut\b|चोट|मोच',
+ 'urinary':r'\btesticles?\b|\bscrot(?:um|al)\b|अंडकोष|अण्डकोष|(?:sting\w*|discomfort).{0,30}(?:urine|urinat|pee)|(?:urine|urinat|pee).{0,30}(?:sting\w*|discomfort)|(?:burn(?:s|ing)?|pain|hurt).{0,30}(?:urine|urinat|pee)|(?:urine|urinat|pee).{0,30}(?:burn|pain|hurt)|(?:burn(?:s|ing)?|pain|hurt).{0,20}(?:urinat|pee)|(?:urinat|pee).{0,20}(?:burn(?:s|ing)?|pain|hurt)|urinary|frequent\s*urinat|leakage|incontinence|kidney\s*stone|testicular|erectile|peshab.{0,15}(?:jalan|dard)|पेशाब.{0,12}(?:जलन|दर्द|नहीं)',
+ 'back_pain':r'(?:lower|upper)?\s*back\s*(?:aches?|hurts?|pain)|back\s*(?:ache|pain)|pain.{0,12}back|kamar.{0,12}dard|कमर.{0,12}दर्द|पीठ.{0,12}दर्द',
+ 'wound':r'\bwounds?\b|dressing|zakham|ज़ख्म|\bcuts?\b|\bburns?\b|\bbites?\b|\bstings?\b|घाव',
+ 'injury':r'\b(?:fell|fallen)\b|bruise.{0,18}(?:after|fall|hit)|\binjur(?:y|ed)\b|sprain|twisted\s*(?:ankle|knee)|\bcut\b|चोट|मोच',
  'knee_pain':r'knee|ghutne|ghutna|घुटने|घुटना',
  'shoulder_pain':r'shoulder|kandh|कंध',
  'ankle_pain':r'ankle|takhna|टखना',
@@ -40,19 +41,19 @@ COMPLAINT_PATTERNS={
  'elderly_care':r'elderly|buzurg|बुज़ुर्ग|old\s*age\s*care',
  'menstrual':r'menstrual|periods?|pelvic|vaginal\s*discharge|breast\s*lump|मासिक',
  'anxiety':r'anxiety|anxious|low\s*mood|depress|ghabrahat|घबराहट',
- 'sleep_problem':r'sleep\s*problem|insomnia|neend|नींद|snoring|kharrate|खर्राटे',
- 'hand_pain':r'\bhand\b|\bfinger\b|\bthumb\b|ungli|उंगली',
+ 'sleep_problem':r'(?:cannot|can.t|unable to|difficulty).{0,12}sleep|sleep.{0,12}(?:badly|poorly)|sleep\s*problem|insomnia|neend|नींद|snoring|kharrate|खर्राटे',
+ 'hand_pain':r'\bhand\b|\bfingers?\b|\bthumbs?\b|ungli|उंगली',
  'muscle_pain':r'muscle|cramp|\bcalf\b|\brib\b',
  'nasal':r'nose|nasal|sinus|\bsmell\b|nosebleed|sneeze|runny|common\s*cold',
- 'cardiac':r'palpitat|racing\s*heart|heartbeat|blood\s*pressure|\bbp\b',
- 'neuro':r'numb|tingling|tremor|shaking|memory|faint|balance|nerve\s*pain',
+ 'cardiac':r'heart.{0,35}(?:skips?|misses?)\s*(?:a\s*)?beats?|palpitat|racing\s*heart|heartbeat|blood\s*pressure|\bbp\b',
+ 'neuro':r'सुन्न|\bsunn?\b|numb|tingling|tremor|shaking|memory|faint|balance|nerve\s*pain',
  'kidney':r'kidney',
  'thyroid':r'thyroid',
- 'nutrition':r'weight\s*(?:loss|gain)|diet|nutrition',
+ 'nutrition':r'(?:lost|losing|gained|gaining)\s*weight|weight\s*(?:loss|gain)|diet|nutrition',
  'blood':r'anemia|anaemia|pale\s*skin|bruis|prolonged\s*bleeding',
  'rash':r'\brash\b|itch(?:y|ing)\s*skin|skin\s*itch|scalp|dandruff|hair\s*loss|\bmole\b|eczema|psoriasis|\bboil\b|hives|sweat|nail|चकत्ते|खुजली',
  'dizziness':r'\bdizz(?:y|iness)\b|light.?headed|chakkar|चक्कर',
- 'eye_problem':r'eye\s*(?:pain|ache|red|problem)|(?:red|painful|sore)\s*eye|vision\s*(?:loss|problem)|blurred|dry\s*eyes|watery\s*eyes|eyelid|stye|eye\s*discharge|light\s*sensitivity|eye\s*injur|आँख.{0,12}(?:दर्द|लाल)|आंख.{0,12}दर्द',
+ 'eye_problem':r'eyes?.{0,18}(?:itch|water|red|sore)|\beye(?:ball)?s?\b.{0,30}(?:blood|bleed|injur)|(?:blood|bleed).{0,35}\beye(?:ball)?s?\b|(?:आँख|आंख|aankh|ankh).{0,30}(?:खून|चोट|दर्द|khoon|chot)|eye\s*(?:pain|ache|red|problem)|(?:red|painful|sore)\s*eye|vision\s*(?:loss|problem)|blurred|dry\s*eyes|watery\s*eyes|eyelid|stye|eye\s*discharge|light\s*sensitivity|eye\s*injur|आँख.{0,12}(?:दर्द|लाल)|आंख.{0,12}दर्द',
  'ear_pain':r'ear\s*(?:ache|pain)|ear\s*discharge|hearing|ringing|tinnitus|blocked\s*ear|ear\s*pressure|earwax|kaan.{0,10}dard|कान.{0,12}दर्द',
  'dental_pain':r'tooth\s*(?:ache|pain)|dental\s*pain|cavity|cavities|bleeding\s*gums|swollen\s*gums|bad\s*breath|broken\s*tooth|chipped\s*tooth|\bjaw\b|daant.{0,12}dard|दाँत.{0,12}दर्द|दांत.{0,12}दर्द',
  'fatigue':r'\bfatigue\b|\bweak(?:ness)?\b|\btired\b|कमजोर|थकान',
@@ -166,22 +167,19 @@ HISTORICAL=r'\b(?:last\s*year|years?\s*ago|history\s*of|used\s*to|resolved|no\s*
 HYPOTHETICAL=r'\b(?:what\s*if|hypothetical|example|quoted|if\s*(?:someone|i|he|she))\b|अगर|agar'
 
 def status_of(text,hit,name=None):
-    if re.search(HYPOTHETICAL,text):return 'hypothetical'
-    if re.search(HISTORICAL,text):return 'historical'
+    from .assertions import status
     if name=='airway_swelling' and re.search(r'(?:not|no)\s*(?:swell|swollen)|(?:swelling|swollen)\s*(?:nahi|नहीं)',hit[0]):return 'denied'
-    before=text[max(0,hit.start()-38):hit.start()];after=text[hit.end():hit.end()+18]
-    # Match-aware scope: "no vomiting blood" is denied, whereas the 'cannot'
-    # embedded in inability-to-swallow/urinate is the affirmative danger sign.
-    if re.search(r'(?:\bno\b|\bnot\b|\bdenies\b|\bwithout\b)\s*(?:(?:any|been|having|currently|ever|sudden|severe|worst|mild|current|a|very|extremely)\s*)*$',before) or re.search(r'^\s*(?:nahi|nahin|नहीं)',after):return 'denied'
-    return 'affirmed'
+    parsed=status(text,hit)
+    return 'hypothetical' if parsed=='unknown' else 'historical' if parsed=='recent_resolved' else parsed
 
 def detect_features(text):
     result={}
-    for clause in re.split(r'[;!?\n]|\.(?!\d)|\bbut\b|लेकिन|\blekin\b|\band\s+now\b',norm(text)):
+    from .assertions import clauses
+    for raw,clause,inherited in clauses(text):
         for name,p in FEATURE_PATTERNS.items():
             m=re.search(p,clause)
             if m:
-                status=status_of(clause,m,name)
+                status=inherited or status_of(clause,m,name)
                 if name not in result or status=='affirmed':result[name]=ClinicalFinding(name=name,status=status,quote=text)
         # Negative polarity is the information for this positively-worded field.
         if re.search(r'(?:cannot|can.t|unable\s*to)\s*keep\s*(?:water|fluids?|drinks?)\s*down|पानी.{0,10}(?:रुकता\s*नहीं|नहीं\s*रुक)',clause):
@@ -221,6 +219,7 @@ BROAD_QUESTIONS={
  'flank_pain':Question('Do you also have pain in your side or flank?','क्या शरीर के बगल या कमर के एक तरफ़ भी दर्द है?',feature='flank_pain'),
  'associated_fever':Question('Have you also developed a fever?','क्या साथ में बुखार भी हुआ है?',feature='fever_with_complaint'),
  'bear_weight':Question('Can you put weight on the injured limb?','क्या चोट वाले हाथ या पैर पर भार डाल पा रहे हैं?',feature='cannot_bear_weight',yes_affirms=False),
+ 'complaint_clarify':Question('Please clarify the main symptom and the body area affected.','कृपया मुख्य लक्षण और शरीर की जगह स्पष्ट करें।',field='complaint_text',choices=()),
  'symptom_detail':Question('What symptom is bothering you most?','कौन सा लक्षण सबसे ज़्यादा परेशान कर रहा है?',field='complaint_text',choices=()),
  'symptom_change':Question('Are the symptoms getting worse, improving, or staying the same?','क्या लक्षण बढ़ रहे हैं, कम हो रहे हैं या वैसे ही हैं?',field='progression',choices=('Getting worse','Improving','Staying the same')),
  # Body-part and care-need questions: each family asks its own questions.
@@ -274,7 +273,24 @@ def enrich(x,text,question=None):
             if status=='affirmed':found.append(name)
             if name not in {v.name for v in x.associated_symptoms}:
                 x.associated_symptoms.append(SymptomEvidence(name=name,status=status if status in ('affirmed','denied') else 'unknown',quote=text))
-    if found:x.complaint=found[0];x.complaint_text=text[:300]
+    # Resolve overlapping lexical matches using the stated location/context.
+    # Do not let 'back of my neck' become a lower-back complaint or urinary
+    # burning create a fictitious skin wound as a secondary complaint.
+    suppressed=set()
+    if 'neck_pain' in found and 'back_pain' in found and re.search(r'back\s+of\s+(?:my\s+|the\s+)?neck',t) and not re.search(r'(?:lower|upper)\s+back',t):suppressed.add('back_pain')
+    if 'urinary' in found and 'wound' in found and not re.search(r'\b(?:wound|cut|skin|burn wound|bite|sting)\b|घाव',t):suppressed.add('wound')
+    if 'neuro' in found and 'hand_pain' in found and re.search(r'numb|tingl|सुन्न|sunn',t):suppressed.add('hand_pain')
+    found=[v for v in found if v not in suppressed]
+    x.associated_symptoms=[v for v in x.associated_symptoms if v.name not in suppressed]
+    if found:
+        x.complaint=found[0];x.complaint_text=text[:300]
+        x.body_site={'urinary':'urinary tract','neck_pain':'neck','back_pain':'back','hand_pain':'hand/fingers','knee_pain':'knee','eye_problem':'eye','ear_pain':'ear','abdominal_pain':'abdomen','testicular':'testicle'}.get(x.complaint)
+        if x.complaint=='urinary' and re.search(r'testicles?|testicular|scrot|अंडकोष|अण्डकोष',t):x.body_site='testicle/scrotum'
+        if re.search(r'(?:pass|passing)\s*urine|urinat|pee|पेशाब|peshab',t) and x.complaint=='urinary':x.trigger='passing urine'
+        elif re.search(r'after meals?|after eating|खाने के बाद',t):x.trigger='after meals'
+        elif re.search(r'after.{0,18}(?:injur|fall|fell)|गिरने',t):x.trigger='after injury/fall'
+        elif re.search(r'when.{0,20}(?:walk|move|grip|raise)|हिलाने',t):x.trigger='movement'
+
     elif not x.service and re.search(r'\b(?:i (?:have|feel)|my .{0,20}(?:hurts|aches)|symptoms?)\b|मुझे|तकलीफ',t) and not re.search(HYPOTHETICAL,t):
         x.complaint='other';x.complaint_text=text[:300]
     x.clinical_features=detect_features(text)
@@ -319,7 +335,8 @@ def has(state,name,status='affirmed'):
     return f is not None and f.status==status
 
 def emergency_evidence(state):
-    f=state.facts;reasons=[]
+    from .safety_screen import actionable
+    f=state.facts;reasons=[v.reason for v in actionable(getattr(state,'safety_findings',[])) if v.disposition=='emergency']
     always={'vomiting_blood':'Blood in vomit','black_sticky_stool':'Black, sticky stool','sudden_worst_headache':'Sudden extremely painful headache','vision_loss':'Loss of vision','new_confusion':'New sudden confusion','airway_swelling':'Tongue or throat swelling','cannot_swallow_saliva':'Unable to swallow saliva'}
     for name,description in always.items():
         if has(state,name):reasons.append(description)
@@ -327,7 +344,7 @@ def emergency_evidence(state):
     if f.complaint=='abdominal_pain':
         if f.severity=='severe' and f.sudden_onset is True:reasons.append('Sudden severe abdominal pain')
     if f.complaint=='headache' and f.severity=='severe' and f.sudden_onset is True:reasons.append('Sudden extremely painful headache')
-    if f.complaint=='eye_problem' and f.sudden_onset is True:reasons.append('Sudden-onset eye symptoms')
+    if f.complaint=='eye_problem' and f.sudden_onset is True and re.search(r'pain|दर्द|dard',f.complaint_text or '',re.I):reasons.append('Sudden-onset eye pain')
     present={f.complaint}|{v.name for v in f.associated_symptoms if v.status=='affirmed'}
     if 'back_pain' in present:
         if has(state,'bladder_change'):reasons.append('New bladder-control change with back pain')
@@ -338,12 +355,16 @@ def emergency_evidence(state):
     return reasons
 
 def broad_concern(state):
+    from .safety_screen import actionable
+    urgent=[v.reason for v in actionable(getattr(state,'safety_findings',[])) if v.disposition=='urgent_assessment']
+    if urgent:return urgent[-1]+'. Do not wait for routine booking or for this chat to finish.'
     f=state.facts;c=f.complaint
     if c=='abdominal_pain' and 'pregnancy' in f.risk_factors:return 'Abdominal pain during pregnancy needs prompt in-person medical assessment.'
     if c=='abdominal_pain' and f.pain_location and 'lower right' in f.pain_location and f.progression=='worsening':return 'Worsening lower-right abdominal pain needs prompt in-person medical assessment.'
     if c in ('abdominal_pain','headache','back_pain','eye_problem','dental_pain','ear_pain') and f.severity=='severe':return 'The reported severe pain needs prompt in-person medical assessment.'
     if has(state,'can_keep_fluids','denied'):return 'Being unable to keep fluids down needs prompt medical assessment for dehydration risk.'
     if has(state,'blood_in_stool') or has(state,'blood_in_urine'):return 'Reported blood needs prompt in-person medical assessment.'
+    if c=='urinary' and f.body_site=='testicle/scrotum':return 'Reported testicular symptoms need prompt in-person clinical assessment; this chat cannot establish a routine care pathway.'
     if c=='urinary' and (f.fever or has(state,'flank_pain')):return 'Urinary symptoms with fever or flank pain need prompt in-person medical assessment.'
     if has(state,'coughing_blood'):return 'Coughing up blood needs prompt medical assessment.'
     if has(state,'sudden_hearing_loss'):return 'Sudden hearing loss needs urgent same-day assessment.'
